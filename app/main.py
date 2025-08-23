@@ -26,10 +26,14 @@ def item1_function(box1, box2, box3):
     return {"equal": (box1 + box2) == box3}
 
 def item1_function_sentiment(box1, box2, box3):
-    return test_sentiment_using_gemma3n_002(box2, box3)
+    return test_sentiment_using_gemma3n_002(box1, box2, box3)
 
 def item2_function(box1, box2, box3):
     return {"equal": (box1 + box2) == box3}
+
+def item2_function_consistency(box1, box2, box3):
+    return test_consistency_using_gemma3n_002(box1, box2, box3)
+
 
 @app.post("/execute/")
 def execute_item(request: ItemRequest):
