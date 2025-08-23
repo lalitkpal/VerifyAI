@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GenAI Evaluations</title>
+    <style>
+        body {
+            background: #f4f6fb;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background: #fff;
+            max-width: 420px;
+            margin: 48px auto 0 auto;
+            padding: 32px 32px 24px 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+        }
+        h2 {
+            text-align: center;
+            color: #2d3a4a;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+        .input-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 18px;
+        }
+        .input-row label {
+            width: 130px;
+            font-size: 1em;
+            color: #3a4a5d;
+            margin-top: 6px;
+            margin-right: 10px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+        .input-row select,
+        .input-row textarea {
+            flex: 1;
+        }
+        select {
+            width: 100%;
+            padding: 7px 8px;
+            border-radius: 6px;
+            border: 1px solid #cfd8dc;
+            background: #f8fafc;
+            font-size: 1em;
+            color: #2d3a4a;
+        }
+        textarea {
+            width: 100%;
+            min-height: 32px;
+            resize: vertical;
+            font-size: 1em;
+            font-family: inherit;
+            padding: 7px 8px;
+            border-radius: 6px;
+            border: 1px solid #cfd8dc;
+            background: #f8fafc;
+            transition: border 0.2s;
+        }
+        textarea:focus, select:focus {
+            border: 1.5px solid #5b9df9;
+            outline: none;
+            background: #fff;
+        }
+        button {
+            width: 100%;
+            padding: 12px 0;
+            background: linear-gradient(90deg, #5b9df9 0%, #3a7bd5 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px rgba(90,157,249,0.08);
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #3a7bd5 0%, #5b9df9 100%);
+        }
+        #result {
+            border: 1.5px solid #e3e8ee;
+            padding: 18px;
+            margin-top: 0;
+            width: 100%;
+            min-height: 40px;
+            background: #f6fafd;
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            border-radius: 8px;
+            color: #2d3a4a;
+            font-size: 1em;
+            word-break: break-word;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Evaluation Metrics</h2>
+        <div class="input-row">
+            <label for="itemSelect">Metric:</label>
+            <select id="itemSelect">
+                <option value="item1">Sentiment Analysis</option>
+                <option value="item2">Consistency</option>
+                <option value="item3">Summarization Quality</option>
+                <option value="item4">Fluency</option>
+                <option value="item5">Creativity</option>
+                <option value="item6">Bias and Fairness</option>
+                <option value="item7">Ethical Considerations</option>
+                <option value="item8">Robustness</option>
+                <option value="item9">Explainability</option>
+                <option value="item10">User Satisfaction</option>
+                <option value="item11">Toxicity Detection</option>
+                <option value="item12">Fact-Checking</option>
+                <option value="item13">Translation Quality</option>
+                <option value="item14">Dialogue Management</option>
+                <option value="item15">Personalization</option>
+                <option value="item16">Engagement</option>
+                <option value="item17">Response Time</option>
+                <option value="item18">Scalability</option>
+                <option value="item19">Privacy and Security</option>
+                <option value="item20">Multimodal Understanding</option>
+                <option value="item21">Domain Adaptation</option>
+                <option value="item22">Long-term Dependency Handling</option>
+                <option value="item23">Cultural Sensitivity</option>
+                <option value="item24">Humor Recognition</option>
+                <option value="item25">Emotional Intelligence</option>
+                <option value="item26">Code Generation Quality</option>
+                <option value="item27">Data Efficiency</option>
+                <option value="item28">Learning from Feedback</option>
+                <option value="item29">Collaboration Ability</option>
+                <option value="item30">Adaptability to New Tasks</option>
+                <option value="item31">Error Recovery</option>
+                <option value="item32">Knowledge Integration</option>
+                <option value="item33">Visual Understanding</option>
+                <option value="item34">Audio Understanding</option>
+                <option value="item35">Video Understanding</option>
+                <option value="item36">Cross-lingual Capabilities</option>
+                <option value="item37">Interactive Learning</option>
+                <option value="item38">Contextual Awareness</option>
+                <option value="item39">Attention to Detail</option>
+                <option value="item40">Paraphrasing Quality</option>
+                <option value="item41">Information Retrieval Accuracy</option>
+                <option value="item42">Toxicity Reduction</option>
+                <option value="item43">Fact-Checking Precision</option>
+                <option value="item44">Translation Fluency</option>
+                <option value="item45">Dialogue Naturalness</option>
+            </select>
+        </div>
+        <div class="input-row">
+            <label for="box1">User Query/Prompt:</label>
+            <textarea id="box1" oninput="autoResize(this)"></textarea>
+        </div>
+        <div class="input-row">
+            <label for="box2">GenAI Output:</label>
+            <textarea id="box2" oninput="autoResize(this)"></textarea>
+        </div>
+        <div class="input-row">
+            <label for="box3">Expected Output:</label>
+            <textarea id="box3" oninput="autoResize(this)"></textarea>
+        </div>
+        <button onclick="executeItem()">Execute</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        async function executeItem() {
+            const item = document.getElementById('itemSelect').value;
+            const box1 = document.getElementById('box1').value;
+            const box2 = document.getElementById('box2').value;
+            const box3 = document.getElementById('box3').value;
+            const response = await fetch('/execute/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({item, box1, box2, box3})
+            });
+            const data = await response.json();
+            document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+    </script>
+</body>
