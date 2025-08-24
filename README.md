@@ -1,64 +1,76 @@
-# FastAPI Application
+# VerifyAI FastAPI Application
 
-This project is a FastAPI application structured for easy development and testing. Below are the details regarding the project setup, usage, and testing.
+This project is a FastAPI application for evaluating GenAI outputs with a simple web UI and API endpoints.
 
 ## Project Structure
 
 ```
-fastapi-app/
-├── app/                     # Main application source code
-│   ├── main.py             # Entry point for the FastAPI application
-│   ├── api/                # API related code
-│   │   └── routes.py       # API routes
-│   ├── models/             # Data models
-│   │   └── __init__.py     # Initialization for models
-│   ├── schemas/            # Pydantic schemas
-│   │   └── __init__.py     # Initialization for schemas
-│   └── dependencies/       # Dependency injection
-│       └── __init__.py     # Initialization for dependencies
-├── tests/                  # Test files
-│   ├── api/                # API tests
-│   │   └── test_users_api.py  # Tests for user-related API endpoints
-│   ├── ui/                 # UI tests
-│   │   ├── page_objects/    # Page Object Model classes for UI testing
-│   │   └── test_login.py    # Tests for login functionality
-│   └── data/               # Test data management
-│       ├── global_data.yml  # Global test data
-│       ├── static_data.yml   # Static test data
-│       └── dynamic_data.yml  # Dynamic test data
-├── tests/conftest.py       # Pytest fixtures and configurations
-├── requirements.txt         # Project dependencies
-└── pyproject.toml          # Project metadata and dependencies
+VerifyAI/
+├── app/                         # Main application source code
+│   ├── main.py                  # FastAPI entry point
+│   ├── static/                  # Static files (frontend)
+│   │   └── index.html           # Main UI page
+│   ├── evaluations/             # Evaluation logic
+│   │   └── check_sentiment.py   # Sentiment evaluation
+│   ├── models/                  # Model wrappers/utilities
+│   │   └── ollama_chat.py       # Example: Ollama chat model
+│   └── utils/                   # Utility functions
+│       └── get_cosine_similarity_score.py
+├── tests/                       # Test files
+│   ├── api/                     # API tests
+│   │   └── test_users_api.py
+│   ├── ui/                      # UI tests
+│   │   ├── page_objects/
+│   │   └── test_login.py
+│   ├── data/                    # Test data
+│   │   ├── global_data.yml
+│   │   ├── static_data.yml
+│   │   └── dynamic_data.yml
+│   └── conftest.py              # Pytest fixtures/config
+├── requirements.txt             # Project dependencies
+└── pyproject.toml               # Project metadata (optional)
 ```
 
 ## Setup Instructions
 
-1. Clone the repository:
-   ```
+1. **Clone the repository:**
+   ```bash
    git clone <repository-url>
-   cd fastapi-app
+   cd VerifyAI
    ```
 
-2. Install the dependencies:
+2. **Create and activate a virtual environment (recommended):**
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
    ```
+
+3. **Install dependencies:**
+   ```bash
    pip install -r requirements.txt
    ```
 
-3. Run the application:
-   ```
+4. **Run the application:**
+   ```bash
    uvicorn app.main:app --reload
    ```
 
-## Usage Guidelines
+## Usage
 
-- The main application can be accessed at `http://localhost:8000`.
-- API documentation is available at `http://localhost:8000/docs`.
+- Access the web UI at: [http://localhost:8000/](http://localhost:8000/)
+- API documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ## Testing
 
-To run the tests, use the following command:
-```
+To run all tests:
+```bash
 pytest
 ```
 
 This will execute all tests in the `tests/` directory.
+
+---
+
+**Note:**  
+- The UI is served from `app/static/index.html`.
+- Update `requirements.txt` if you add new dependencies.
