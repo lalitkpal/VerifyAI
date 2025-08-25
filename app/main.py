@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from app.evaluations.check_sentiment import test_sentiment_using_gemma3n_002
 from app.evaluations.check_consistency import test_consistency_using_cosine_similarity_002
 from app.evaluations.check_consistency import test_consistency_using_gemma3n_002
+from app.evaluations.check_summarization import test_summarization_using_cosine_similarity_002
+from app.evaluations.check_summarization import test_summarization_using_gemma3n_002
 import os
 
 app = FastAPI()
@@ -51,6 +53,25 @@ def item2_function_consistency_001(box1, box2, box3):
 
 def item2_function_consistency_002(box1, box2, box3):
     return test_consistency_using_gemma3n_002(box1, box2, box3)
+
+def item3_function_summarization_001(box1, box2, box3):
+    score =  test_summarization_using_cosine_similarity_002(box1, box2, box3)
+    if score > 0.85:
+        description = "Excellent summary"
+    elif score > 0.7:
+        description = "Good summary"
+    elif score > 0.5:
+        description = "Fair summary"
+    else:
+        description = "Poor summary"
+
+    return {
+        "Cosine similarity score": round(score, 3),
+        "Consistency": description
+    }
+
+def item3_function_summarization_002(box1, box2, box3):
+    return test_summarization_using_gemma3n_002(box1, box2, box3)
     
     
 
@@ -62,5 +83,7 @@ def execute_item(request: ItemRequest):
         return item1_function_sentiment(request.box1, request.box2, request.box3)
     elif request.item == "item2":
         return item2_function_consistency_002(request.box1, request.box2, request.box3)
+    elif request.item == "item3":
+        return item3_function_summarization_002(request.box1, request.box2, request.box3)
     else:
         return {"error": "Unknown item"}
