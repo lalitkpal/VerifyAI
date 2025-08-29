@@ -1,12 +1,16 @@
 from fastapi import FastAPI
+from fastapi import Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from app.models.ollama_chat import get_gemma3n_response
 from app.evaluations.check_sentiment import test_sentiment_using_gemma3n_002
+from app.evaluations.check_sentiment import test_sentiment_using_stringcmp_002
 from app.evaluations.check_consistency import test_consistency_using_cosine_similarity_002
 from app.evaluations.check_consistency import test_consistency_using_gemma3n_002
 from app.evaluations.check_summarization import test_summarization_using_cosine_similarity_002
 from app.evaluations.check_summarization import test_summarization_using_gemma3n_002
+
 import os
 
 app = FastAPI()
@@ -26,11 +30,20 @@ def read_root():
     index_path = os.path.join(os.path.dirname(__file__), "static", "index.html")
     return FileResponse(index_path)
 
+@app.post("/run_prompt/")
+async def run_prompt(request: Request):
+    data = await request.json()
+    prompt = data.get("prompt")
+    result = get_gemma3n_response(prompt)
+    # result = f"GenAI output for: {prompt}"  # Placeholder
+    return {"output": result}
+
 def item1_function(box1, box2, box3):
     return {"equal": (box1 + box2) == box3}
 
 def item1_function_sentiment(box1, box2, box3):
-    return test_sentiment_using_gemma3n_002(box1, box2, box3)
+    #return test_sentiment_using_gemma3n_002(box1, box2, box3)
+    return test_sentiment_using_stringcmp_002(box1, box2, box3)
 
 def item2_function(box1, box2, box3):
     return {"equal": (box1 + box2) == box3}

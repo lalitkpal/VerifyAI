@@ -157,6 +157,12 @@
         <div class="input-row">
             <label for="box1">User Query/Prompt:</label>
             <textarea id="box1" oninput="autoResize(this)"></textarea>
+            <button 
+                type="button" 
+                style="margin-left:8px; margin-right:8px; height:32px; width:48px; min-width:48px; padding:0 8px; font-size:0.95em; border-radius:6px; background:#5b9df9; color:#fff; border:none; cursor:pointer;"
+                onclick="runPrompt()"
+                title="Run Prompt"
+            >Run</button>
         </div>
         <div class="input-row">
             <label for="box2">GenAI Output:</label>
@@ -182,6 +188,18 @@
             });
             const data = await response.json();
             document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function runPrompt() {
+            const prompt = document.getElementById('box1').value;
+            const response = await fetch('/run_prompt/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({prompt})
+            });
+            const data = await response.json();
+            document.getElementById('box2').value = data.output;
+            autoResize(document.getElementById('box2'));
         }
 
         function autoResize(textarea) {
