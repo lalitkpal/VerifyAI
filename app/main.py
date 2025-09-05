@@ -10,6 +10,8 @@ from app.evaluations.check_consistency import test_consistency_using_cosine_simi
 from app.evaluations.check_consistency import test_consistency_using_gemma3n_002
 from app.evaluations.check_summarization import test_summarization_using_cosine_similarity_002
 from app.evaluations.check_summarization import test_summarization_using_gemma3n_002
+from app.evaluations.check_fluency import test_fluency
+from app.evaluations.check_fluency import test_fluency_using_gemma3n_002
 
 import os
 
@@ -86,8 +88,22 @@ def item3_function_summarization_001(box1, box2, box3):
 def item3_function_summarization_002(box1, box2, box3):
     return test_summarization_using_gemma3n_002(box1, box2, box3)
     
-    
+def item4_function_fluency_001(box1, box2, box3):
 
+    num_errors = test_fluency(box1, box2, box3)
+    if num_errors == 0:
+        label = "Excellent fluency"
+    elif num_errors <= 2:
+        label = "Good fluency"
+    elif num_errors <= 5:
+        label = "Fair fluency"
+    else:
+        label = "Poor fluency"
+
+    return label
+
+def item4_function_fluency_002(box1, box2, box3):
+    return test_fluency_using_gemma3n_002(box1, box2, box3)
 
 
 @app.post("/execute/")
@@ -98,5 +114,7 @@ def execute_item(request: ItemRequest):
         return item2_function_consistency_002(request.box1, request.box2, request.box3)
     elif request.item == "item3":
         return item3_function_summarization_002(request.box1, request.box2, request.box3)
+    elif request.item == "item4":
+        return item4_function_fluency_002(request.box1, request.box2, request.box3)
     else:
         return {"error": "Unknown item"}
