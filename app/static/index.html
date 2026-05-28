@@ -1,210 +1,1624 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>GenAI Evaluations</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerifyAI | AI & Coding Agent Verification Harness</title>
+    <!-- Google Fonts Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            background: #f4f6fb;
-            font-family: 'Segoe UI', Arial, sans-serif;
+        :root {
+            --bg-dark: #070a13;
+            --bg-surface: #0f1424;
+            --bg-card: rgba(22, 28, 45, 0.7);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(99, 102, 241, 0.3);
+            --text-main: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.15);
+            --accent: #a855f7;
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.15);
+            --warning: #f59e0b;
+            --warning-glow: rgba(245, 158, 11, 0.15);
+            --danger: #ef4444;
+            --danger-glow: rgba(239, 68, 68, 0.15);
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        .container {
-            background: #fff;
-            max-width: 420px;
-            margin: 48px auto 0 auto;
-            padding: 32px 32px 24px 32px;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1.5px 4px rgba(0,0,0,0.04);
-        }
-        h2 {
-            text-align: center;
-            color: #2d3a4a;
-            margin-bottom: 24px;
-            font-weight: 600;
-        }
-        .input-row {
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            min-height: 100vh;
             display: flex;
-            align-items: flex-start;
-            margin-bottom: 18px;
+            overflow-x: hidden;
         }
-        .input-row label {
-            width: 130px;
-            font-size: 1em;
-            color: #3a4a5d;
-            margin-top: 6px;
-            margin-right: 10px;
-            text-align: right;
-            flex-shrink: 0;
+
+        /* App Container & Sidebar */
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
         }
-        .input-row select,
-        .input-row textarea {
+
+        .sidebar {
+            width: 260px;
+            background: rgba(15, 20, 36, 0.95);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            position: fixed;
+            height: 100vh;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
+        }
+
+        .logo svg {
+            stroke: url(#logo-grad);
+            width: 28px;
+            height: 28px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            list-style: none;
             flex: 1;
         }
-        select {
-            width: 100%;
-            padding: 7px 8px;
-            border-radius: 6px;
-            border: 1px solid #cfd8dc;
-            background: #f8fafc;
-            font-size: 1em;
-            color: #2d3a4a;
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+            stroke: currentColor;
+            fill: none;
+        }
+
+        .nav-item:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .nav-item.active {
+            color: #fff;
+            background: var(--primary);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            font-size: 0.8em;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-footer .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.05em;
+        }
+
+        /* Grid System & Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .stat-card .label {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-card .value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stat-card .trend {
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend.up { color: var(--success); }
+        .trend.down { color: var(--danger); }
+
+        .stat-card .icon-wrapper {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .stat-card .icon-wrapper svg {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Chart & Feed Grid */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+        }
+
+        .card-title {
+            font-size: 1.15em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Platforms Grid */
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .platform-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .platform-card:hover {
+            background: rgba(99, 102, 241, 0.04);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        .platform-logo {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 12px auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.04);
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .platform-name {
+            font-weight: 600;
+            font-size: 0.95em;
+            margin-bottom: 4px;
+        }
+
+        .platform-pass-rate {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+        }
+
+        .rate-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .rate-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .platform-selectors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .platform-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .platform-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .platform-btn.selected {
+            background: var(--primary-glow);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
         textarea {
             width: 100%;
-            min-height: 32px;
+            min-height: 100px;
+            background: rgba(15, 20, 36, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            padding: 14px;
+            font-size: 0.95em;
+            font-family: var(--font-sans);
             resize: vertical;
-            font-size: 1em;
-            font-family: inherit;
-            padding: 7px 8px;
-            border-radius: 6px;
-            border: 1px solid #cfd8dc;
-            background: #f8fafc;
-            transition: border 0.2s;
+            transition: all 0.2s ease;
         }
-        textarea:focus, select:focus {
-            border: 1.5px solid #5b9df9;
+
+        textarea:focus {
             outline: none;
-            background: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background: rgba(15, 20, 36, 0.95);
         }
-        button {
-            width: 100%;
-            padding: 12px 0;
-            background: linear-gradient(90deg, #5b9df9 0%, #3a7bd5 100%);
+
+        textarea.code-font {
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+        }
+
+        /* Switch list */
+        .check-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .check-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .check-item:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .check-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .check-name {
+            font-size: 0.92em;
+            font-weight: 600;
+        }
+
+        .check-desc {
+            font-size: 0.8em;
+            color: var(--text-muted);
+        }
+
+        /* Custom Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+        button.action-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             color: #fff;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
+            padding: 14px 28px;
+            font-size: 1.05em;
             font-weight: 600;
+            border-radius: 10px;
             cursor: pointer;
-            margin-top: 8px;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 8px rgba(90,157,249,0.08);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+            width: 100%;
+        }
+
+        button.action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+        }
+
+        /* Scanning overlay */
+        .scan-overlay {
+            display: none;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            background: rgba(15, 20, 36, 0.8);
+            border-radius: 16px;
+            margin-top: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .scanner-circle {
+            width: 72px;
+            height: 72px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 24px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .scan-step {
+            margin-top: 10px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+
+        /* Results Display */
+        .results-wrapper {
+            display: none;
+            margin-top: 32px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .summary-banner {
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid;
+        }
+
+        .summary-banner.passed {
+            background: var(--success-glow);
+            border-color: var(--success);
+            color: #fff;
+        }
+
+        .summary-banner.failed {
+            background: var(--danger-glow);
+            border-color: var(--danger);
+            color: #fff;
+        }
+
+        .banner-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.15em;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge.passed { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge.failed { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .badge.warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+
+        .result-accordions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .accordion-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.01);
             transition: background 0.2s;
         }
-        button:hover {
-            background: linear-gradient(90deg, #3a7bd5 0%, #5b9df9 100%);
+
+        .accordion-header:hover {
+            background: rgba(255, 255, 255, 0.03);
         }
-        #result {
-            border: 1.5px solid #e3e8ee;
-            padding: 18px;
-            margin-top: 0;
-            width: 100%;
-            min-height: 40px;
-            background: #f6fafd;
-            font-family: 'Fira Mono', 'Consolas', monospace;
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-title {
+            font-weight: 600;
+        }
+
+        .accordion-body {
+            display: none;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.15);
+            font-size: 0.92em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .accordion-body.open {
+            display: block;
+        }
+
+        .pre-wrapper {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 14px;
             border-radius: 8px;
-            color: #2d3a4a;
-            font-size: 1em;
-            word-break: break-word;
-            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            font-family: var(--font-mono);
+            font-size: 0.85em;
+            overflow-x: auto;
+            margin-top: 10px;
+            color: #a5b4fc;
+        }
+
+        /* History view */
+        .history-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 16px;
+        }
+
+        .search-input {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .clear-history-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+        }
+
+        .clear-history-btn:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .history-table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.92em;
+        }
+
+        .history-table th, .history-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .history-table th {
+            background: rgba(255, 255, 255, 0.01);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .history-table tbody tr {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .history-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Detail Drawer */
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -600px;
+            width: 600px;
+            height: 100vh;
+            background: var(--bg-surface);
+            border-left: 1px solid var(--border-color);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            z-index: 100;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 32px;
+        }
+
+        .drawer.open {
+            right: 0;
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .drawer-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+
+        .drawer-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .drawer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .drawer-section h3 {
+            font-size: 0.95em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .drawer-text {
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.02);
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        /* Rules card grid */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .rule-detail-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rule-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--primary-glow);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Custom SVG graphs on dashboard */
+        .chart-svg {
+            width: 100%;
+            height: 200px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Evaluation Metrics</h2>
-        <div class="input-row">
-            <label for="itemSelect">Metric:</label>
-            <select id="itemSelect">
-                <option value="item1">Sentiment Analysis</option>
-                <option value="item2">Consistency</option>
-                <option value="item3">Summarization Quality</option>
-                <option value="item4">Fluency</option>
-                <option value="item5">Creativity</option>
-                <option value="item6">Bias and Fairness</option>
-                <option value="item7">Ethical Considerations</option>
-                <option value="item8">Robustness</option>
-                <option value="item9">Explainability</option>
-                <option value="item10">User Satisfaction</option>
-                <option value="item11">Toxicity Detection</option>
-                <option value="item12">Fact-Checking</option>
-                <option value="item13">Translation Quality</option>
-                <option value="item14">Dialogue Management</option>
-                <option value="item15">Personalization</option>
-                <option value="item16">Engagement</option>
-                <option value="item17">Response Time</option>
-                <option value="item18">Scalability</option>
-                <option value="item19">Privacy and Security</option>
-                <option value="item20">Multimodal Understanding</option>
-                <option value="item21">Domain Adaptation</option>
-                <option value="item22">Long-term Dependency Handling</option>
-                <option value="item23">Cultural Sensitivity</option>
-                <option value="item24">Humor Recognition</option>
-                <option value="item25">Emotional Intelligence</option>
-                <option value="item26">Code Generation Quality</option>
-                <option value="item27">Data Efficiency</option>
-                <option value="item28">Learning from Feedback</option>
-                <option value="item29">Collaboration Ability</option>
-                <option value="item30">Adaptability to New Tasks</option>
-                <option value="item31">Error Recovery</option>
-                <option value="item32">Knowledge Integration</option>
-                <option value="item33">Visual Understanding</option>
-                <option value="item34">Audio Understanding</option>
-                <option value="item35">Video Understanding</option>
-                <option value="item36">Cross-lingual Capabilities</option>
-                <option value="item37">Interactive Learning</option>
-                <option value="item38">Contextual Awareness</option>
-                <option value="item39">Attention to Detail</option>
-                <option value="item40">Paraphrasing Quality</option>
-                <option value="item41">Information Retrieval Accuracy</option>
-                <option value="item42">Toxicity Reduction</option>
-                <option value="item43">Fact-Checking Precision</option>
-                <option value="item44">Translation Fluency</option>
-                <option value="item45">Dialogue Naturalness</option>
-            </select>
-        </div>
-        <div class="input-row">
-            <label for="box1">User Query/Prompt:</label>
-            <textarea id="box1" oninput="autoResize(this)"></textarea>
-            <button 
-                type="button" 
-                style="margin-left:8px; margin-right:8px; height:32px; width:48px; min-width:48px; padding:0 8px; font-size:0.95em; border-radius:6px; background:#5b9df9; color:#fff; border:none; cursor:pointer;"
-                onclick="runPrompt()"
-                title="Run Prompt"
-            >Run</button>
-        </div>
-        <div class="input-row">
-            <label for="box2">GenAI Output:</label>
-            <textarea id="box2" oninput="autoResize(this)"></textarea>
-        </div>
-        <div class="input-row">
-            <label for="box3">Expected Output:</label>
-            <textarea id="box3" oninput="autoResize(this)"></textarea>
-        </div>
-        <button onclick="executeItem()">Execute</button>
-        <div id="result"></div>
+    <!-- SVG Gradients -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#a855f7" />
+                <stop offset="100%" stop-color="#6366f1" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+                <span>VerifyAI</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="switchTab('dashboard', this)">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                    Dashboard
+                </li>
+                <li class="nav-item" onclick="switchTab('verify', this)">
+                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    New Verification
+                </li>
+                <li class="nav-item" onclick="switchTab('history', this)">
+                    <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Logs & History
+                </li>
+                <li class="nav-item" onclick="switchTab('rules', this)">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    Harness Rules
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="status">
+                    <div class="status-dot"></div>
+                    Harness Active
+                </div>
+                <span>VerifyAI Engine v0.1.0</span>
+            </div>
+        </aside>
+
+        <!-- Main Content Panel -->
+        <main class="main-content">
+            
+            <!-- TAB 1: DASHBOARD -->
+            <section id="panel-dashboard" class="tab-panel active">
+                <div class="page-header">
+                    <h1>System Dashboard</h1>
+                    <p>Live aggregates and platform verification stats</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="label">Total Verifications</span>
+                        <span id="stat-total" class="value">0</span>
+                        <div class="icon-wrapper">
+                            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Harness Pass Rate</span>
+                        <span id="stat-passrate" class="value">0%</span>
+                        <div class="icon-wrapper" style="color: var(--success);">
+                            <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Evaluation Rules</span>
+                        <span class="value">6 Active</span>
+                        <div class="icon-wrapper" style="color: var(--accent);">
+                            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-row">
+                    <div class="card-wrapper">
+                        <div class="card-title">Platform Verification Performance</div>
+                        <div id="chart-container" style="display: flex; align-items: flex-end; justify-content: space-around; height: 220px; padding: 20px 0;">
+                            <!-- Dynamically generated bars will go here -->
+                            <div style="color: var(--text-muted); font-size: 0.9em; margin: auto;">No verification data logged yet. Run a validation to generate metrics.</div>
+                        </div>
+                    </div>
+                    <div class="card-wrapper">
+                        <div class="card-title">Recent Alerts</div>
+                        <div id="alert-feed" style="display: flex; flex-direction: column; gap: 12px; max-height: 220px; overflow-y: auto;">
+                            <div style="color: var(--text-muted); font-size: 0.9em; text-align: center; padding-top: 40px;">No alerts logged.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 16px; font-weight: 600;">Verified Platform Indexes</h3>
+                <div class="platforms-grid">
+                    <div class="platform-card" onclick="startVerify('Cursor')">
+                        <div class="platform-logo" style="background: rgba(168, 85, 247, 0.1); color: #c084fc;">CU</div>
+                        <div class="platform-name">Cursor IDE</div>
+                        <div id="rate-Cursor" class="platform-pass-rate">No runs</div>
+                        <div class="rate-bar"><div id="bar-Cursor" class="rate-fill" style="width: 0%;"></div></div>
+                    </div>
+                    <div class="platform-card" onclick="startVerify('Claude')">
+                        <div class="platform-logo" style="background: rgba(245, 158, 11, 0.1); color: #fbbf24;">CL</div>
+                        <div class="platform-name">Claude (Anthropic)</div>
+                        <div id="rate-Claude" class="platform-pass-rate">No runs</div>
+                        <div class="rate-bar"><div id="bar-Claude" class="rate-fill" style="width: 0%;"></div></div>
+                    </div>
+                    <div class="platform-card" onclick="startVerify('ChatGPT')">
+                        <div class="platform-logo" style="background: rgba(16, 185, 129, 0.1); color: #34d399;">GP</div>
+                        <div class="platform-name">ChatGPT (OpenAI)</div>
+                        <div id="rate-ChatGPT" class="platform-pass-rate">No runs</div>
+                        <div class="rate-bar"><div id="bar-ChatGPT" class="rate-fill" style="width: 0%;"></div></div>
+                    </div>
+                    <div class="platform-card" onclick="startVerify('Perplexity')">
+                        <div class="platform-logo" style="background: rgba(6, 182, 212, 0.1); color: #22d3ee;">PX</div>
+                        <div class="platform-name">Perplexity</div>
+                        <div id="rate-Perplexity" class="platform-pass-rate">No runs</div>
+                        <div class="rate-bar"><div id="bar-Perplexity" class="rate-fill" style="width: 0%;"></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: NEW VERIFICATION -->
+            <section id="panel-verify" class="tab-panel">
+                <div class="page-header">
+                    <h1>New Verification Run</h1>
+                    <p>Select target agent and evaluate payload compliance</p>
+                </div>
+
+                <div class="card-wrapper" style="margin-bottom: 24px;">
+                    <div class="form-group">
+                        <label>Agent / Chatbot Source</label>
+                        <div class="platform-selectors">
+                            <button type="button" class="platform-btn selected" onclick="selectPlatform('Cursor', this)">Cursor IDE</button>
+                            <button type="button" class="platform-btn" onclick="selectPlatform('Copilot', this)">GitHub Copilot</button>
+                            <button type="button" class="platform-btn" onclick="selectPlatform('Windsurf', this)">Windsurf</button>
+                            <button type="button" class="platform-btn" onclick="selectPlatform('Claude', this)">Claude 3.5</button>
+                            <button type="button" class="platform-btn" onclick="selectPlatform('ChatGPT', this)">ChatGPT-4o</button>
+                            <button type="button" class="platform-btn" onclick="selectPlatform('Gemini', this)">Gemini Pro</button>
+                            <button type="button" class="platform-btn" onclick="selectPlatform('Perplexity', this)">Perplexity</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verify-prompt">User Prompt / System Context</label>
+                        <textarea id="verify-prompt" placeholder="Paste user prompt here... (e.g. 'Write a python function that connects to S3' or 'Who won the election?')"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verify-message">Outgoing LLM / Agent Message</label>
+                        <textarea id="verify-message" class="code-font" placeholder="Paste generated code, text blocks, markdown, or JSON response to inspect..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verify-expected">Expected/Reference Output (Optional)</label>
+                        <textarea id="verify-expected" placeholder="Optionally paste correct reference code or factual content to measure cosine similarity..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Verification Suites to Execute</label>
+                        <div class="check-grid">
+                            <div class="check-item" onclick="toggleSwitch('check-code')">
+                                <div class="check-info">
+                                    <span class="check-name">Code Checker</span>
+                                    <span class="check-desc">Syntax compile, secrets, lazy TODOs</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="check-code" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('check-safety')">
+                                <div class="check-info">
+                                    <span class="check-name">Safety & PII filter</span>
+                                    <span class="check-desc">Email, phone, SSN, CC, jailbreaks</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="check-safety" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('check-grounding')">
+                                <div class="check-info">
+                                    <span class="check-name">Citation Verifier</span>
+                                    <span class="check-desc">Grounding, HTTP URL status checks</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="check-grounding">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('check-structure')">
+                                <div class="check-info">
+                                    <span class="check-name">JSON compliance</span>
+                                    <span class="check-desc">Structured output syntax parsing</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="check-structure" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('check-similarity')">
+                                <div class="check-info">
+                                    <span class="check-name">Semantic similarity</span>
+                                    <span class="check-desc">Sentence embeddings vs reference</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="check-similarity">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('check-fluency')">
+                                <div class="check-info">
+                                    <span class="check-name">Fluency & Grammar</span>
+                                    <span class="check-desc">Linguistic flow and formatting checks</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="check-fluency" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="action-btn" onclick="runVerify()">Run Verification Pipeline</button>
+                </div>
+
+                <!-- SCANNER ANIMATION OVERLAY -->
+                <div id="verify-scan" class="scan-overlay">
+                    <div class="scanner-circle"></div>
+                    <h3 style="font-weight: 600; margin-bottom: 8px;">Intercepting Outgoing Message...</h3>
+                    <div id="scan-step-text" class="scan-step">Extracting code segments...</div>
+                </div>
+
+                <!-- RESULTS PANEL -->
+                <div id="verify-results" class="results-wrapper">
+                    <div id="results-banner" class="summary-banner">
+                        <div class="banner-title">
+                            <span id="results-icon"></span>
+                            <span id="results-title-text">Verification Completed</span>
+                        </div>
+                        <span id="results-badge" class="badge"></span>
+                    </div>
+
+                    <div id="results-accordion-list" class="result-accordions">
+                        <!-- Accordion cards generated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: LOGS & HISTORY -->
+            <section id="panel-history" class="tab-panel">
+                <div class="page-header">
+                    <h1>Verification logs</h1>
+                    <p>Inspect historical runs and raw payloads</p>
+                </div>
+
+                <div class="history-controls">
+                    <input type="text" id="history-search" class="search-input" placeholder="Search by prompt or source..." oninput="filterHistory()">
+                    <button class="clear-history-btn" onclick="clearHistory()">Clear History</button>
+                </div>
+
+                <div class="history-table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Timestamp</th>
+                                <th>Checks</th>
+                                <th>Status</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-tbody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px 0;">No history logged yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 4: RULES -->
+            <section id="panel-rules" class="tab-panel">
+                <div class="page-header">
+                    <h1>Verification Rules Index</h1>
+                    <p>Details and configuration of the active verification engines</p>
+                </div>
+
+                <div class="rules-grid">
+                    <div class="rule-detail-card">
+                        <div class="rule-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        </div>
+                        <h3 style="font-weight: 600;">Code Syntax parser</h3>
+                        <p style="font-size: 0.9em; color: var(--text-secondary); line-height: 1.5;">
+                            Validates programming blocks extracted from Markdown. Python scripts are parsed via AST compilation to ensure zero syntax errors. JSON blocks are verified against RFC 8259 parser logic.
+                        </p>
+                    </div>
+                    <div class="rule-detail-card">
+                        <div class="rule-icon" style="color: var(--danger); background: var(--danger-glow);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </div>
+                        <h3 style="font-weight: 600;">Secret Scanner</h3>
+                        <p style="font-size: 0.9em; color: var(--text-secondary); line-height: 1.5;">
+                            Scans code blocks for hardcoded cloud identifiers. Checks for high-entropy strings, AWS API access keys, secret keys, and general tokens (Slack, GitHub, private keys) before publication.
+                        </p>
+                    </div>
+                    <div class="rule-detail-card">
+                        <div class="rule-icon" style="color: var(--warning); background: var(--warning-glow);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        </div>
+                        <h3 style="font-weight: 600;">Completeness Audit</h3>
+                        <p style="font-size: 0.9em; color: var(--text-secondary); line-height: 1.5;">
+                            Checks for incomplete functions or lazy coding placeholders. Identifies markers such as "// TODO", "# implement code here", or ellipses ("...") left inside functions.
+                        </p>
+                    </div>
+                    <div class="rule-detail-card">
+                        <div class="rule-icon" style="color: #60a5fa; background: rgba(96, 165, 250, 0.1);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        </div>
+                        <h3 style="font-weight: 600;">Citation Web-Verifier</h3>
+                        <p style="font-size: 0.9em; color: var(--text-secondary); line-height: 1.5;">
+                            Extricates citations from Perplexity/Gemini outputs. Executes concurrent, lightweight HTTP connection and status calls (HEAD/GET requests) to ensure external reference links aren't dead or hallucinated.
+                        </p>
+                    </div>
+                    <div class="rule-detail-card">
+                        <div class="rule-icon" style="color: var(--success); background: var(--success-glow);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        </div>
+                        <h3 style="font-weight: 600;">Jailbreak/PII Shield</h3>
+                        <p style="font-size: 0.9em; color: var(--text-secondary); line-height: 1.5;">
+                            Analyzes prompt contexts for override triggers and guards outputs against credit card patterns, social security numbers, emails, and phone number leaks.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
+
+    <!-- DETAILS DRAWER (SLIDES FROM RIGHT) -->
+    <div id="history-drawer" class="drawer">
+        <div class="drawer-header">
+            <h2 id="drawer-title" style="font-size: 1.4em; font-weight: 700;">Verification Run Details</h2>
+            <button class="drawer-close" onclick="closeDrawer()">&times;</button>
+        </div>
+        <div class="drawer-content">
+            <div class="drawer-section">
+                <h3>Platform Source</h3>
+                <span id="drawer-source" class="badge" style="align-self: flex-start;"></span>
+            </div>
+            <div class="drawer-section">
+                <h3>Timestamp</h3>
+                <p id="drawer-time" style="font-size: 0.95em; color: var(--text-secondary);"></p>
+            </div>
+            <div class="drawer-section">
+                <h3>User Prompt</h3>
+                <div id="drawer-prompt" class="drawer-text"></div>
+            </div>
+            <div class="drawer-section">
+                <h3>Response Checked</h3>
+                <div id="drawer-message" class="drawer-text" style="font-family: var(--font-mono); font-size: 0.85em;"></div>
+            </div>
+            <div class="drawer-section">
+                <h3>Check Results Summary</h3>
+                <div id="drawer-results" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        async function executeItem() {
-            const item = document.getElementById('itemSelect').value;
-            const box1 = document.getElementById('box1').value;
-            const box2 = document.getElementById('box2').value;
-            const box3 = document.getElementById('box3').value;
-            const response = await fetch('/execute/', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({item, box1, box2, box3})
-            });
-            const data = await response.json();
-            document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+        let currentPlatform = 'Cursor';
+        let allHistory = [];
+
+        // Tab selection
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            
+            el.classList.add('active');
+            document.getElementById(`panel-${tabId}`).classList.add('active');
+            
+            if (tabId === 'dashboard') {
+                loadStats();
+            } else if (tabId === 'history') {
+                loadHistory();
+            }
         }
 
-        async function runPrompt() {
-            const prompt = document.getElementById('box1').value;
-            const response = await fetch('/run_prompt/', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({prompt})
-            });
-            const data = await response.json();
-            document.getElementById('box2').value = data.output;
-            autoResize(document.getElementById('box2'));
+        // Start verify helper from dashboard
+        function startVerify(platform) {
+            switchTab('verify', document.querySelectorAll('.nav-menu .nav-item')[1]);
+            const btn = Array.from(document.querySelectorAll('.platform-btn')).find(b => b.textContent.includes(platform));
+            if (btn) btn.click();
         }
 
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
+        // Toggle Switch helper
+        function toggleSwitch(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.checked = !el.checked;
+            }
         }
+
+        // Selecting a platform in new verification view
+        function selectPlatform(platform, el) {
+            currentPlatform = platform;
+            document.querySelectorAll('.platform-btn').forEach(btn => btn.classList.remove('selected'));
+            el.classList.add('selected');
+            
+            // Set defaults based on platform type
+            const isCoding = ['Cursor', 'Copilot', 'Windsurf'].includes(platform);
+            const isSearch = ['Perplexity', 'Gemini'].includes(platform);
+            
+            document.getElementById('check-code').checked = isCoding;
+            document.getElementById('check-grounding').checked = isSearch;
+            document.getElementById('check-safety').checked = true;
+            document.getElementById('check-structure').checked = true;
+            document.getElementById('check-fluency').checked = true;
+        }
+
+        // Fetching stats for dashboard
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/stats');
+                const data = await res.json();
+                
+                document.getElementById('stat-total').textContent = data.total_runs || 0;
+                document.getElementById('stat-passrate').textContent = data.total_runs ? `${Math.round(data.pass_rate * 100)}%` : '0%';
+                
+                // Set platform rates in visual grid
+                const platforms = ['Cursor', 'Claude', 'ChatGPT', 'Perplexity'];
+                platforms.forEach(p => {
+                    const rateInfo = data.platform_stats[p] || data.platform_stats[`${p} IDE`] || data.platform_stats[`${p} 3.5`] || data.platform_stats[`${p}-4o`];
+                    const rateEl = document.getElementById(`rate-${p}`);
+                    const barEl = document.getElementById(`bar-${p}`);
+                    if (rateInfo) {
+                        const pct = Math.round(rateInfo.pass_rate * 100);
+                        rateEl.textContent = `${pct}% pass rate (${rateInfo.total} runs)`;
+                        barEl.style.width = `${pct}%`;
+                        if (pct < 70) barEl.style.backgroundColor = 'var(--danger)';
+                        else if (pct < 90) barEl.style.backgroundColor = 'var(--warning)';
+                        else barEl.style.backgroundColor = 'var(--success)';
+                    } else {
+                        rateEl.textContent = 'No runs';
+                        barEl.style.width = '0%';
+                    }
+                });
+
+                // Generate basic visual SVG bars for statistics chart
+                const chartContainer = document.getElementById('chart-container');
+                if (data.total_runs > 0) {
+                    chartContainer.innerHTML = '';
+                    Object.entries(data.platform_stats).forEach(([name, info]) => {
+                        const barPct = Math.round(info.pass_rate * 100);
+                        const barWrapper = document.createElement('div');
+                        barWrapper.style.display = 'flex';
+                        barWrapper.style.flexDirection = 'column';
+                        barWrapper.style.alignItems = 'center';
+                        barWrapper.style.width = '60px';
+                        barWrapper.style.gap = '8px';
+                        
+                        barWrapper.innerHTML = `
+                            <div style="font-size:0.75em; color:var(--text-secondary); font-weight:600;">${barPct}%</div>
+                            <div style="height:120px; width:28px; background:rgba(255,255,255,0.03); border-radius:6px; display:flex; align-items:flex-end;">
+                                <div style="height:${barPct}%; width:100%; background:linear-gradient(to top, var(--primary), var(--accent)); border-radius:6px; transition: height 1s ease;"></div>
+                            </div>
+                            <div style="font-size:0.8em; color:var(--text-secondary); max-width:60px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" title="${name}">${name}</div>
+                        `;
+                        chartContainer.appendChild(barWrapper);
+                    });
+                }
+                
+                // Get history to pull recent alert feed
+                const historyRes = await fetch('/api/history');
+                const historyData = await historyRes.json();
+                const feed = document.getElementById('alert-feed');
+                feed.innerHTML = '';
+                
+                const failures = historyData.filter(h => h.status === 'failed').slice(0, 5);
+                if (failures.length > 0) {
+                    failures.forEach(f => {
+                        const item = document.createElement('div');
+                        item.style.padding = '10px 14px';
+                        item.style.background = 'rgba(239, 68, 68, 0.05)';
+                        item.style.borderLeft = '3px solid var(--danger)';
+                        item.style.borderRadius = '0 6px 6px 0';
+                        item.style.fontSize = '0.85em';
+                        
+                        const time = new Date(f.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        item.innerHTML = `
+                            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                <strong style="color:#fff;">${f.source} Fail</strong>
+                                <span style="color:var(--text-muted);">${time}</span>
+                            </div>
+                            <div style="color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Prompt: ${f.prompt}</div>
+                        `;
+                        feed.appendChild(item);
+                    });
+                } else {
+                    feed.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9em; text-align: center; padding-top: 40px;">No alerts logged.</div>';
+                }
+                
+            } catch (err) {
+                console.error("Error loading stats:", err);
+            }
+        }
+
+        // Run verification test harness
+        async function runVerify() {
+            const prompt = document.getElementById('verify-prompt').value.trim();
+            const message = document.getElementById('verify-message').value.trim();
+            const expected_output = document.getElementById('verify-expected').value.trim();
+            
+            if (!prompt || !message) {
+                alert("Please provide both a prompt and outgoing message to verify.");
+                return;
+            }
+
+            const checks = [];
+            if (document.getElementById('check-code').checked) checks.push('code_check');
+            if (document.getElementById('check-safety').checked) checks.push('safety_check');
+            if (document.getElementById('check-grounding').checked) checks.push('grounding_check');
+            if (document.getElementById('check-structure').checked) checks.push('structure_check');
+            if (document.getElementById('check-similarity').checked) checks.push('semantic_check');
+            if (document.getElementById('check-fluency').checked) checks.push('fluency_check');
+
+            // Show scan overlay
+            document.getElementById('verify-scan').style.display = 'block';
+            document.getElementById('verify-results').style.display = 'none';
+            
+            // Steps simulation
+            const steps = [
+                "Intercepting outgoing response packet...",
+                "Running AST compile checkers on extracted code...",
+                "Parsing structure formats...",
+                "Reviewing API credentials and secret scanners...",
+                "Calling grounding web-verification tasks...",
+                "Finalizing verification matrix report..."
+            ];
+            let stepIdx = 0;
+            const stepTimer = setInterval(() => {
+                if (stepIdx < steps.length - 1) {
+                    stepIdx++;
+                    document.getElementById('scan-step-text').textContent = steps[stepIdx];
+                }
+            }, 600);
+
+            try {
+                const res = await fetch('/api/verify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        source: currentPlatform,
+                        prompt,
+                        message,
+                        expected_output: expected_output || null,
+                        checks
+                    })
+                });
+                
+                clearInterval(stepTimer);
+                document.getElementById('verify-scan').style.display = 'none';
+                
+                const data = await res.json();
+                displayResults(data);
+                
+            } catch (err) {
+                clearInterval(stepTimer);
+                document.getElementById('verify-scan').style.display = 'none';
+                alert("Error calling verification pipeline: " + err.message);
+            }
+        }
+
+        // Render verification report accordion tree
+        function displayResults(data) {
+            const verifyResults = document.getElementById('verify-results');
+            const banner = document.getElementById('results-banner');
+            const badge = document.getElementById('results-badge');
+            const titleIcon = document.getElementById('results-icon');
+            const titleText = document.getElementById('results-title-text');
+            const list = document.getElementById('results-accordion-list');
+            
+            list.innerHTML = '';
+            verifyResults.style.display = 'block';
+            
+            const isPassed = data.status === 'passed';
+            banner.className = `summary-banner ${isPassed ? 'passed' : 'failed'}`;
+            badge.className = `badge ${isPassed ? 'passed' : 'failed'}`;
+            badge.textContent = data.status;
+            
+            if (isPassed) {
+                titleIcon.innerHTML = `<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+                titleText.textContent = "Harness Verification Passed";
+            } else {
+                titleIcon.innerHTML = `<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+                titleText.textContent = "Harness Verification Failed";
+            }
+
+            // Create check accordions
+            Object.entries(data.results).forEach(([checkKey, checkVal]) => {
+                const item = document.createElement('div');
+                item.className = 'accordion-item';
+                
+                const cStatus = checkVal.status;
+                const statusIconColor = cStatus === 'passed' ? 'var(--success)' : (cStatus === 'warning' ? 'var(--warning)' : 'var(--danger)');
+                const statusBadgeClass = cStatus === 'passed' ? 'passed' : (cStatus === 'warning' ? 'warning' : 'failed');
+                
+                // SVG icon for status
+                let svgIcon = '';
+                if (cStatus === 'passed') {
+                    svgIcon = `<svg width="18" height="18" fill="none" stroke="${statusIconColor}" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+                } else {
+                    svgIcon = `<svg width="18" height="18" fill="none" stroke="${statusIconColor}" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+                }
+
+                item.innerHTML = `
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="header-left">
+                            ${svgIcon}
+                            <span class="header-title">${formatCheckName(checkKey)}</span>
+                        </div>
+                        <span class="badge ${statusBadgeClass}">${cStatus}</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="font-weight: 500; color: #fff; margin-bottom: 8px;">${checkVal.message}</p>
+                        <div class="pre-wrapper">
+                            ${JSON.stringify(checkVal.details || {}, null, 2)}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function formatCheckName(key) {
+            return key.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        function toggleAccordion(header) {
+            const body = header.nextElementSibling;
+            body.classList.toggle('open');
+        }
+
+        // Fetching logs history
+        async function loadHistory() {
+            try {
+                const res = await fetch('/api/history');
+                const data = await res.json();
+                allHistory = data;
+                renderHistoryTable(data);
+            } catch (err) {
+                console.error("Error fetching history:", err);
+            }
+        }
+
+        function renderHistoryTable(data) {
+            const tbody = document.getElementById('history-tbody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px 0;">No history logged yet.</td></tr>`;
+                return;
+            }
+
+            data.forEach(run => {
+                const row = document.createElement('tr');
+                row.onclick = () => openDrawer(run);
+                
+                const time = new Date(run.timestamp).toLocaleString();
+                const totalChecks = run.passed_count + run.failed_count;
+                const statusBadge = `<span class="badge ${run.status === 'passed' ? 'passed' : 'failed'}">${run.status}</span>`;
+                
+                row.innerHTML = `
+                    <td style="font-weight: 600;">${run.source}</td>
+                    <td style="color: var(--text-secondary);">${time}</td>
+                    <td>${run.passed_count}/${totalChecks} passed</td>
+                    <td>${statusBadge}</td>
+                    <td style="color: var(--primary); font-weight: 500;">Inspect &rarr;</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterHistory() {
+            const query = document.getElementById('history-search').value.toLowerCase();
+            const filtered = allHistory.filter(h => 
+                h.source.toLowerCase().includes(query) || 
+                h.prompt.toLowerCase().includes(query) || 
+                h.message.toLowerCase().includes(query)
+            );
+            renderHistoryTable(filtered);
+        }
+
+        async function clearHistory() {
+            if (confirm("Are you sure you want to permanently clear the verification history?")) {
+                try {
+                    await fetch('/api/history', {method: 'DELETE'});
+                    loadHistory();
+                } catch (err) {
+                    alert("Error clearing history: " + err.message);
+                }
+            }
+        }
+
+        // Drawer slider
+        function openDrawer(run) {
+            document.getElementById('drawer-title').textContent = `Verification Run Info`;
+            const srcBadge = document.getElementById('drawer-source');
+            srcBadge.textContent = run.source;
+            srcBadge.className = `badge ${run.status === 'passed' ? 'passed' : 'failed'}`;
+            
+            document.getElementById('drawer-time').textContent = new Date(run.timestamp).toLocaleString();
+            document.getElementById('drawer-prompt').textContent = run.prompt;
+            document.getElementById('drawer-message').textContent = run.message;
+            
+            // Detail runs
+            const resultsDiv = document.getElementById('drawer-results');
+            resultsDiv.innerHTML = '';
+            
+            Object.entries(run.results || {}).forEach(([checkKey, checkVal]) => {
+                const cDiv = document.createElement('div');
+                cDiv.style.padding = '12px';
+                cDiv.style.background = 'rgba(255,255,255,0.02)';
+                cDiv.style.border = '1px solid var(--border-color)';
+                cDiv.style.borderRadius = '6px';
+                cDiv.style.display = 'flex';
+                cDiv.style.flexDirection = 'column';
+                cDiv.style.gap = '4px';
+                
+                const cStatus = checkVal.status;
+                const statusColor = cStatus === 'passed' ? 'var(--success)' : (cStatus === 'warning' ? 'var(--warning)' : 'var(--danger)');
+                
+                cDiv.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.9em;">
+                        <span>${formatCheckName(checkKey)}</span>
+                        <span style="color:${statusColor}; text-transform:uppercase;">${cStatus}</span>
+                    </div>
+                    <div style="font-size:0.82em; color:var(--text-secondary);">${checkVal.message}</div>
+                `;
+                resultsDiv.appendChild(cDiv);
+            });
+            
+            document.getElementById('history-drawer').classList.add('open');
+        }
+
+        function closeDrawer() {
+            document.getElementById('history-drawer').classList.remove('open');
+        }
+
+        // Initial setup
+        window.onload = () => {
+            loadStats();
+        };
     </script>
 </body>
+</html>
