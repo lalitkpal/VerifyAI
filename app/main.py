@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, UploadFile, File, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
+import json
 
 # Existing imports
 from app.models.ollama_chat import get_gemma3n_response
@@ -22,6 +23,10 @@ from app.evaluations.check_code import run_code_verifications
 from app.evaluations.check_safety import run_safety_verifications
 from app.evaluations.check_grounding import verify_citations_and_links
 from app.evaluations.check_structure import verify_structure_compliance
+
+# Custom utility imports
+from app.utils.file_parser import parse_csv_data, parse_excel_data
+from app.utils.llm_execution import execute_llm_prompt
 
 import os
 
@@ -50,6 +55,30 @@ class VerifyRequest(BaseModel):
     prompt: str
     message: str
     expected_output: Optional[str] = None
+    checks: Optional[List[str]] = None
+
+class BatchVerifyRequest(BaseModel):
+    model_description: str
+    items: List[dict]
+    checks: Optional[List[str]] = None
+
+class TestCaseRequest(BaseModel):
+    name: str
+    prompt: str
+    expected_output: Optional[str] = None
+
+class ModelConfigRequest(BaseModel):
+    name: str
+    provider: str
+    model_name: str
+    api_key: Optional[str] = ""
+    base_url: Optional[str] = ""
+    is_active: Optional[bool] = True
+    id: Optional[str] = None
+
+class EvaluationRunRequest(BaseModel):
+    test_case_ids: List[str]
+    model_ids: List[str]
     checks: Optional[List[str]] = None
 
 # Serve index.html at root
@@ -269,3 +298,220 @@ async def get_stats():
 async def delete_history():
     await database.clear_history()
     return {"status": "success", "message": "Verification history cleared."}
+
+@app.post("/api/verify/batch")
+async def verify_batch(req: BatchVerifyRequest):
+    import asyncio
+    passed_runs = 0
+    failed_runs = 0
+    
+    async def process_item(item):
+        prompt = item.get("prompt", "")
+        message = item.get("message", "")
+        expected = item.get("expected_output") or ""
+        
+        v_req = VerifyRequest(
+            source=req.model_description,
+            prompt=prompt,
+            message=message,
+            expected_output=expected,
+            checks=req.checks
+        )
+        return await verify_output(v_req)
+        
+    tasks = [process_item(item) for item in req.items]
+    run_results = await asyncio.gather(*tasks)
+    
+    for res in run_results:
+        if res["status"] == "passed":
+            passed_runs += 1
+        else:
+            failed_runs += 1
+            
+    return {
+        "status": "success",
+        "passed_runs": passed_runs,
+        "failed_runs": failed_runs,
+        "total_runs": len(run_results),
+        "results": run_results
+    }
+
+@app.post("/api/verify/upload")
+async def verify_upload(
+    file: UploadFile = File(...),
+    model_description: str = Form("Uploaded Model"),
+    checks: Optional[str] = Form(None)
+):
+    import asyncio
+    # Parse checks list from JSON if available
+    checks_list = None
+    if checks:
+        try:
+            checks_list = json.loads(checks)
+        except Exception:
+            checks_list = [c.strip() for c in checks.split(",") if c.strip()]
+            
+    content_bytes = await file.read()
+    filename = file.filename.lower()
+    
+    items = []
+    if filename.endswith(".csv"):
+        content_str = content_bytes.decode("utf-8", errors="ignore")
+        items = parse_csv_data(content_str)
+    elif filename.endswith((".xlsx", ".xls")):
+        items = parse_excel_data(content_bytes)
+    else:
+        return {"error": "Unsupported file format. Please upload a .csv, .xlsx, or .xls file."}
+        
+    if not items:
+        return {"error": "No valid test cases parsed from the file. Check headers."}
+        
+    async def process_item(item):
+        prompt = item.get("prompt", "")
+        message = item.get("message", "")
+        expected = item.get("expected_output") or ""
+        
+        v_req = VerifyRequest(
+            source=model_description,
+            prompt=prompt,
+            message=message,
+            expected_output=expected,
+            checks=checks_list
+        )
+        return await verify_output(v_req)
+        
+    tasks = [process_item(item) for item in items]
+    run_results = await asyncio.gather(*tasks)
+    
+    passed_runs = sum(1 for r in run_results if r["status"] == "passed")
+    failed_runs = len(run_results) - passed_runs
+    
+    return {
+        "status": "success",
+        "passed_runs": passed_runs,
+        "failed_runs": failed_runs,
+        "total_runs": len(run_results),
+        "results": run_results
+    }
+
+@app.get("/api/test_cases")
+async def get_test_cases():
+    return await database.get_test_cases()
+
+@app.post("/api/test_cases")
+async def create_test_case(tc: TestCaseRequest):
+    tc_id = await database.save_test_case(tc.name, tc.prompt, tc.expected_output)
+    return {"status": "success", "id": tc_id}
+
+@app.delete("/api/test_cases/{tc_id}")
+async def delete_test_case(tc_id: str):
+    await database.delete_test_case(tc_id)
+    return {"status": "success"}
+
+@app.get("/api/models")
+async def get_models():
+    return await database.get_model_endpoints()
+
+@app.post("/api/models")
+async def create_or_update_model(cfg: ModelConfigRequest):
+    endpoint_id = await database.save_model_endpoint(
+        name=cfg.name,
+        provider=cfg.provider,
+        model_name=cfg.model_name,
+        api_key=cfg.api_key or "",
+        base_url=cfg.base_url or "",
+        is_active=cfg.is_active if cfg.is_active is not None else True,
+        endpoint_id=cfg.id
+    )
+    return {"status": "success", "id": endpoint_id}
+
+@app.delete("/api/models/{endpoint_id}")
+async def delete_model(endpoint_id: str):
+    await database.delete_model_endpoint(endpoint_id)
+    return {"status": "success"}
+
+@app.post("/api/models/test")
+async def test_model_endpoint(cfg: ModelConfigRequest):
+    test_prompt = "Hello! Please reply with exactly the word 'OK'."
+    try:
+        response_text = await execute_llm_prompt(
+            provider=cfg.provider,
+            model_name=cfg.model_name,
+            api_key=cfg.api_key or "",
+            base_url=cfg.base_url or "",
+            prompt=test_prompt
+        )
+        return {"status": "success", "response": response_text}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@app.post("/api/evaluations/run")
+async def run_evaluation_suite(req: EvaluationRunRequest):
+    import asyncio
+    all_cases = await database.get_test_cases()
+    selected_cases = [tc for tc in all_cases if tc["id"] in req.test_case_ids]
+    
+    all_models = await database.get_model_endpoints()
+    selected_models = [m for m in all_models if m["id"] in req.model_ids]
+    
+    if not selected_cases or not selected_models:
+        return {"error": "Please select at least one test case and one model endpoint."}
+        
+    async def evaluate_single(model, test_case):
+        model_name = model["name"]
+        provider = model["provider"]
+        model_id = model["id"]
+        tc_id = test_case["id"]
+        tc_name = test_case["name"]
+        prompt = test_case["prompt"]
+        expected = test_case["expected_output"] or ""
+        
+        try:
+            generated_response = await execute_llm_prompt(
+                provider=provider,
+                model_name=model["model_name"],
+                api_key=model["api_key"] or "",
+                base_url=model["base_url"] or "",
+                prompt=prompt
+            )
+            
+            v_req = VerifyRequest(
+                source=f"{model_name} ({model['model_name']})",
+                prompt=prompt,
+                message=generated_response,
+                expected_output=expected,
+                checks=req.checks
+            )
+            verification = await verify_output(v_req)
+            
+            return {
+                "model_id": model_id,
+                "model_name": model_name,
+                "test_case_id": tc_id,
+                "test_case_name": tc_name,
+                "status": verification["status"],
+                "run_id": verification["id"],
+                "error": None
+            }
+        except Exception as e:
+            return {
+                "model_id": model_id,
+                "model_name": model_name,
+                "test_case_id": tc_id,
+                "test_case_name": tc_name,
+                "status": "failed",
+                "run_id": None,
+                "error": str(e)
+            }
+
+    tasks = []
+    for model in selected_models:
+        for tc in selected_cases:
+            tasks.append(evaluate_single(model, tc))
+            
+    grid_results = await asyncio.gather(*tasks)
+    
+    return {
+        "status": "success",
+        "results": grid_results
+    }

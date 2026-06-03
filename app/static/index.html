@@ -11,17 +11,17 @@
     
     <style>
         :root {
-            --bg-dark: #070a13;
-            --bg-surface: #0f1424;
-            --bg-card: rgba(22, 28, 45, 0.7);
-            --border-color: rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(99, 102, 241, 0.3);
-            --text-main: #f3f4f6;
-            --text-secondary: #9ca3af;
+            --bg-dark: #f9fafb;
+            --bg-surface: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --border-hover: rgba(249, 115, 22, 0.3);
+            --text-main: #1f2937;
+            --text-secondary: #4b5563;
             --text-muted: #6b7280;
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.15);
-            --accent: #a855f7;
+            --primary: #f97316;
+            --primary-glow: rgba(249, 115, 22, 0.15);
+            --accent: #f59e0b;
             --success: #10b981;
             --success-glow: rgba(16, 185, 129, 0.15);
             --warning: #f59e0b;
@@ -41,8 +41,8 @@
         body {
             background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
+                radial-gradient(circle at 10% 20%, rgba(249, 115, 22, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
             color: var(--text-main);
             font-family: var(--font-sans);
             min-height: 100vh;
@@ -59,7 +59,7 @@
 
         .sidebar {
             width: 260px;
-            background: rgba(15, 20, 36, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
@@ -75,7 +75,7 @@
             gap: 12px;
             font-size: 1.3em;
             font-weight: 700;
-            background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 40px;
@@ -118,7 +118,7 @@
 
         .nav-item:hover {
             color: var(--text-main);
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.06);
         }
 
         .nav-item.active {
@@ -189,7 +189,7 @@
         .page-header h1 {
             font-size: 2em;
             font-weight: 700;
-            color: #fff;
+            color: var(--text-main);
             margin-bottom: 8px;
         }
 
@@ -234,7 +234,7 @@
         .stat-card .value {
             font-size: 2em;
             font-weight: 700;
-            color: #fff;
+            color: var(--text-main);
         }
 
         .stat-card .trend {
@@ -254,7 +254,7 @@
             width: 44px;
             height: 44px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.06);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -303,7 +303,7 @@
         }
 
         .platform-card {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(0, 0, 0, 0.04);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 20px;
@@ -327,7 +327,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(0, 0, 0, 0.08);
             font-weight: bold;
             color: #fff;
         }
@@ -346,7 +346,7 @@
         .rate-bar {
             width: 100%;
             height: 4px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.010);
             border-radius: 2px;
             margin-top: 10px;
             overflow: hidden;
@@ -380,7 +380,7 @@
         }
 
         .platform-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.06);
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
             padding: 10px 16px;
@@ -395,7 +395,7 @@
         }
 
         .platform-btn:hover {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.012);
             color: #fff;
         }
 
@@ -409,7 +409,7 @@
         textarea {
             width: 100%;
             min-height: 100px;
-            background: rgba(15, 20, 36, 0.8);
+            background: rgba(255, 255, 255, 0.8);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             color: var(--text-main);
@@ -424,7 +424,7 @@
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-glow);
-            background: rgba(15, 20, 36, 0.95);
+            background: rgba(255, 255, 255, 0.95);
         }
 
         textarea.code-font {
@@ -441,7 +441,7 @@
         }
 
         .check-item {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(0, 0, 0, 0.04);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 14px 16px;
@@ -453,8 +453,8 @@
         }
 
         .check-item:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.08);
         }
 
         .check-info {
@@ -494,7 +494,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.1);
             transition: .3s;
             border-radius: 34px;
         }
@@ -544,7 +544,7 @@
             padding: 40px;
             text-align: center;
             border: 1px solid var(--border-color);
-            background: rgba(15, 20, 36, 0.8);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 16px;
             margin-top: 24px;
             backdrop-filter: blur(10px);
@@ -628,7 +628,7 @@
         }
 
         .accordion-item {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(0, 0, 0, 0.04);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
@@ -640,12 +640,12 @@
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            background: rgba(255, 255, 255, 0.01);
+            background: rgba(0, 0, 0, 0.02);
             transition: background 0.2s;
         }
 
         .accordion-header:hover {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.06);
         }
 
         .header-left {
@@ -662,7 +662,7 @@
             display: none;
             padding: 20px 24px;
             border-top: 1px solid var(--border-color);
-            background: rgba(0, 0, 0, 0.15);
+            background: rgba(0, 0, 0, 0.05);
             font-size: 0.92em;
             color: var(--text-secondary);
             line-height: 1.6;
@@ -673,15 +673,15 @@
         }
 
         .pre-wrapper {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(240, 240, 240, 1);
             padding: 14px;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             font-family: var(--font-mono);
             font-size: 0.85em;
             overflow-x: auto;
             margin-top: 10px;
-            color: #a5b4fc;
+            color: #ea580c;
         }
 
         /* History view */
@@ -741,7 +741,7 @@
         }
 
         .history-table th {
-            background: rgba(255, 255, 255, 0.01);
+            background: rgba(0, 0, 0, 0.02);
             color: var(--text-secondary);
             font-weight: 600;
         }
@@ -752,7 +752,7 @@
         }
 
         .history-table tbody tr:hover {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(0, 0, 0, 0.04);
         }
 
         /* Detail Drawer */
@@ -832,7 +832,7 @@
         }
 
         .rule-detail-card {
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(0, 0, 0, 0.04);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 24px;
@@ -856,6 +856,169 @@
         .chart-svg {
             width: 100%;
             height: 200px;
+        }
+
+        /* Custom styles for Batch & Evaluation */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.02);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+            color: var(--text-main);
+        }
+        .upload-zone svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--primary);
+            fill: none;
+            stroke-width: 2;
+        }
+        .eval-grid-container {
+            overflow-x: auto;
+            margin-top: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+        }
+        .eval-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        .eval-matrix th, .eval-matrix td {
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9em;
+        }
+        .eval-matrix th {
+            background: rgba(0, 0, 0, 0.03);
+            color: var(--text-main);
+            font-weight: 600;
+        }
+        .eval-matrix td.case-name {
+            text-align: left;
+            font-weight: 500;
+            background: rgba(0, 0, 0, 0.01);
+            color: var(--text-main);
+        }
+        .eval-cell-badge {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.82em;
+            text-transform: uppercase;
+            transition: transform 0.2s;
+        }
+        .eval-cell-badge:hover {
+            transform: scale(1.05);
+        }
+        .model-list-manager, .case-list-manager {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        .model-item-row, .case-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            gap: 12px;
+        }
+        .row-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mini-btn {
+            padding: 6px 10px;
+            font-size: 0.80em;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.04);
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+        .mini-btn:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: var(--text-main);
+        }
+        .mini-btn.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        .mini-btn.danger:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+        .mini-btn.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        .mini-btn.success:hover {
+            background: var(--success);
+            color: #fff;
+        }
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: underline;
+        }
+        .tab-sub-panel {
+            display: none;
+        }
+        .tab-sub-panel.active {
+            display: block;
+        }
+        .sub-nav {
+            display: flex;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            padding-bottom: 8px;
+        }
+        .sub-nav-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .sub-nav-item.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
         }
     </style>
 </head>
@@ -888,6 +1051,14 @@
                 <li class="nav-item" onclick="switchTab('verify', this)">
                     <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     New Verification
+                </li>
+                <li class="nav-item" onclick="switchTab('batch', this)">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Batch Verifier
+                </li>
+                <li class="nav-item" onclick="switchTab('evaluation', this)">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                    Model Evaluation
                 </li>
                 <li class="nav-item" onclick="switchTab('history', this)">
                     <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -1115,6 +1286,375 @@
                 </div>
             </section>
 
+            <!-- TAB: BATCH VERIFICATION -->
+            <section id="panel-batch" class="tab-panel">
+                <div class="page-header">
+                    <h1>Batch Verification</h1>
+                    <p>Process multiple outputs by uploading a CSV/Excel sheet or sending a JSON payload</p>
+                </div>
+
+                <div class="card-wrapper" style="margin-bottom: 24px;">
+                    <h3 style="margin-bottom: 16px; font-weight: 600;">1. Verification Configuration</h3>
+                    <div class="form-group">
+                        <label for="batch-model-desc">Model Name & Description Tag</label>
+                        <input type="text" id="batch-model-desc" class="search-input" style="max-width: 100%; width: 100%; margin-bottom: 12px;" placeholder="e.g. Claude 3.5 Sonnet (Uploaded)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Verification Suites to Execute</label>
+                        <div class="check-grid">
+                            <div class="check-item" onclick="toggleSwitch('batch-check-code')">
+                                <div class="check-info">
+                                    <span class="check-name">Code Checker</span>
+                                    <span class="check-desc">Syntax compile, secrets, lazy TODOs</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="batch-check-code" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('batch-check-safety')">
+                                <div class="check-info">
+                                    <span class="check-name">Safety & PII filter</span>
+                                    <span class="check-desc">Email, phone, SSN, CC, jailbreaks</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="batch-check-safety" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('batch-check-grounding')">
+                                <div class="check-info">
+                                    <span class="check-name">Citation Verifier</span>
+                                    <span class="check-desc">Grounding, HTTP URL status checks</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="batch-check-grounding">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('batch-check-structure')">
+                                <div class="check-info">
+                                    <span class="check-name">JSON compliance</span>
+                                    <span class="check-desc">Structured output syntax parsing</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="batch-check-structure" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('batch-check-similarity')">
+                                <div class="check-info">
+                                    <span class="check-name">Semantic similarity</span>
+                                    <span class="check-desc">Sentence embeddings vs reference</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="batch-check-similarity">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('batch-check-fluency')">
+                                <div class="check-info">
+                                    <span class="check-name">Fluency & Grammar</span>
+                                    <span class="check-desc">Linguistic flow and formatting checks</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="batch-check-fluency" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-row" style="grid-template-columns: 1fr 1fr;">
+                    <div class="card-wrapper">
+                        <h3 style="margin-bottom: 12px; font-weight: 600;">Option A: Upload Sheet</h3>
+                        <div class="upload-zone" id="drop-zone" onclick="document.getElementById('batch-file-input').click()">
+                            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <div>
+                                <strong style="color: var(--primary);">Click to upload</strong> or drag and drop
+                                <div style="font-size: 0.8em; color: var(--text-muted); margin-top: 4px;">Supports CSV, XLSX, XLS files</div>
+                            </div>
+                            <input type="file" id="batch-file-input" style="display: none;" accept=".csv,.xlsx,.xls" onchange="handleFileSelect(event)">
+                        </div>
+                        <div id="upload-status" style="font-size: 0.9em; color: var(--success); font-weight: 500; text-align: center;"></div>
+                    </div>
+
+                    <div class="card-wrapper">
+                        <h3 style="margin-bottom: 12px; font-weight: 600;">Option B: Paste JSON Payload</h3>
+                        <textarea id="batch-json-area" style="font-family: var(--font-mono); font-size: 0.85em; min-height: 125px; margin-bottom: 12px;" placeholder='[&#10;  {&#10;    "prompt": "Write a python factorial",&#10;    "message": "def factorial(n):...",&#10;    "expected_output": "def factorial..."&#10;  }&#10;]'></textarea>
+                        <button class="action-btn" onclick="runBatchJSON()" style="padding: 10px 20px; font-size: 0.95em;">Verify JSON Batch</button>
+                    </div>
+                </div>
+
+                <div id="batch-scan" class="scan-overlay">
+                    <div class="scanner-circle"></div>
+                    <h3 style="font-weight: 600; margin-bottom: 8px;">Processing Batch Verifications...</h3>
+                    <div class="scan-step">Verifying parsed datasets...</div>
+                </div>
+
+                <!-- BATCH RESULTS DISPLAY -->
+                <div id="batch-results" class="results-wrapper" style="margin-top: 24px;">
+                    <div class="card-wrapper" style="margin-bottom: 24px;">
+                        <h3 style="margin-bottom: 16px; font-weight: 600;">Batch Processing Summary</h3>
+                        <div class="stats-grid" style="margin-bottom: 0;">
+                            <div class="stat-card" style="padding: 16px;">
+                                <span class="label">Total Test Cases</span>
+                                <span id="batch-stat-total" class="value">0</span>
+                            </div>
+                            <div class="stat-card" style="padding: 16px;">
+                                <span class="label">Passed Executions</span>
+                                <span id="batch-stat-passed" class="value" style="color: var(--success);">0</span>
+                            </div>
+                            <div class="stat-card" style="padding: 16px;">
+                                <span class="label">Failed Executions</span>
+                                <span id="batch-stat-failed" class="value" style="color: var(--danger);">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="history-table-container">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Prompt</th>
+                                    <th>Checks Status</th>
+                                    <th>Overall Result</th>
+                                    <th>Inspect</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batch-results-tbody">
+                                <!-- Dynamically added rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: MODEL EVALUATION -->
+            <section id="panel-evaluation" class="tab-panel">
+                <div class="page-header">
+                    <h1>Model Evaluation Suite</h1>
+                    <p>Evaluate multiple model endpoints on test cases to generate compliance matrices</p>
+                </div>
+
+                <!-- Sub-navigation tabs inside Model Evaluation -->
+                <div class="sub-nav">
+                    <div id="sub-nav-run" class="sub-nav-item active" onclick="switchSubTab('run')">Run Evaluations</div>
+                    <div id="sub-nav-models" class="sub-nav-item" onclick="switchSubTab('models')">Configure Endpoints</div>
+                    <div id="sub-nav-cases" class="sub-nav-item" onclick="switchSubTab('cases')">Configure Test Cases</div>
+                </div>
+
+                <!-- Sub-panel 1: RUN EVALUATION -->
+                <div id="sub-panel-run" class="tab-sub-panel active">
+                    <div class="dashboard-row" style="grid-template-columns: 1fr 1fr; gap: 24px;">
+                        <!-- Select Test Cases -->
+                        <div class="card-wrapper">
+                            <div class="card-title">
+                                <span>1. Select Test Cases</span>
+                                <button class="btn-link" onclick="toggleSelectAll('case-cb-list', true)">Select All</button>
+                            </div>
+                            <div id="case-cb-list" class="case-list-manager" style="max-height: 250px;">
+                                <!-- Checkboxes populated dynamically -->
+                                <div style="color: var(--text-muted); font-size: 0.9em; text-align: center; padding: 20px;">Loading test cases...</div>
+                            </div>
+                        </div>
+
+                        <!-- Select Models -->
+                        <div class="card-wrapper">
+                            <div class="card-title">
+                                <span>2. Select Models</span>
+                                <button class="btn-link" onclick="toggleSelectAll('model-cb-list', true)">Select All</button>
+                            </div>
+                            <div id="model-cb-list" class="model-list-manager" style="max-height: 250px;">
+                                <!-- Checkboxes populated dynamically -->
+                                <div style="color: var(--text-muted); font-size: 0.9em; text-align: center; padding: 20px;">Loading models...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evaluation checks suite selection -->
+                    <div class="card-wrapper" style="margin: 24px 0;">
+                        <h3 style="margin-bottom: 16px; font-weight: 600;">3. Evaluation Suites</h3>
+                        <div class="check-grid">
+                            <div class="check-item" onclick="toggleSwitch('eval-check-code')">
+                                <div class="check-info">
+                                    <span class="check-name">Code Checker</span>
+                                    <span class="check-desc">Syntax compile, secrets, lazy TODOs</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="eval-check-code" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('eval-check-safety')">
+                                <div class="check-info">
+                                    <span class="check-name">Safety & PII filter</span>
+                                    <span class="check-desc">Email, phone, SSN, CC, jailbreaks</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="eval-check-safety" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('eval-check-grounding')">
+                                <div class="check-info">
+                                    <span class="check-name">Citation Verifier</span>
+                                    <span class="check-desc">Grounding, HTTP URL status checks</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="eval-check-grounding">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('eval-check-structure')">
+                                <div class="check-info">
+                                    <span class="check-name">JSON compliance</span>
+                                    <span class="check-desc">Structured output syntax parsing</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="eval-check-structure" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('eval-check-similarity')">
+                                <div class="check-info">
+                                    <span class="check-name">Semantic similarity</span>
+                                    <span class="check-desc">Sentence embeddings vs reference</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="eval-check-similarity">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('eval-check-fluency')">
+                                <div class="check-info">
+                                    <span class="check-name">Fluency & Grammar</span>
+                                    <span class="check-desc">Linguistic flow and formatting checks</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="eval-check-fluency" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <button class="action-btn" onclick="runEvaluationSuite()" style="margin-top: 10px;">Run Multi-Model Evaluation Suite</button>
+                    </div>
+
+                    <!-- Evaluation progress banner -->
+                    <div id="eval-scan" class="scan-overlay">
+                        <div class="scanner-circle"></div>
+                        <h3 style="font-weight: 600; margin-bottom: 8px;">Running Multi-Model Evaluations...</h3>
+                        <div class="scan-step">Generating outputs and verifying compliance...</div>
+                    </div>
+
+                    <!-- Evaluation Matrix Output -->
+                    <div id="eval-results" class="results-wrapper">
+                        <div class="card-wrapper">
+                            <h3 style="margin-bottom: 16px; font-weight: 600;">Comparison Compliance Matrix</h3>
+                            <div class="eval-grid-container">
+                                <table class="eval-matrix">
+                                    <thead id="eval-matrix-thead">
+                                        <!-- Columns generated dynamically -->
+                                    </thead>
+                                    <tbody id="eval-matrix-tbody">
+                                        <!-- Rows generated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-panel 2: CONFIGURE ENDPOINTS -->
+                <div id="sub-panel-models" class="tab-sub-panel">
+                    <div class="dashboard-row" style="grid-template-columns: 1.2fr 0.8fr; gap: 24px;">
+                        <!-- Active model endpoints -->
+                        <div class="card-wrapper">
+                            <div class="card-title">Configured Model Endpoints</div>
+                            <div id="models-list" class="model-list-manager" style="max-height: 500px;">
+                                <!-- Models fetched and rendered dynamically -->
+                                <div style="color: var(--text-muted); font-size: 0.9em; text-align: center; padding: 20px;">Loading model configurations...</div>
+                            </div>
+                        </div>
+
+                        <!-- Add/edit model endpoint form -->
+                        <div class="card-wrapper">
+                            <div class="card-title" id="model-form-title">Add Model Endpoint</div>
+                            <form id="model-config-form" onsubmit="saveModelConfig(event)">
+                                <input type="hidden" id="model-config-id" value="">
+                                
+                                <div class="form-group">
+                                    <label for="model-config-name">Endpoint Display Name</label>
+                                    <input type="text" id="model-config-name" class="search-input" style="max-width:100%;" required placeholder="e.g. Local Llama 3">
+                                </div>
+                                <div class="form-group">
+                                    <label for="model-config-provider">LLM Provider</label>
+                                    <select id="model-config-provider" class="search-input" style="max-width:100%; cursor: pointer;" onchange="handleProviderChange()" required>
+                                        <option value="ollama">Ollama (Local)</option>
+                                        <option value="openai">OpenAI (Cloud)</option>
+                                        <option value="anthropic">Anthropic (Cloud)</option>
+                                        <option value="gemini">Google Gemini (Cloud)</option>
+                                        <option value="openai-compatible">OpenAI-Compatible (vLLM, LM Studio, etc.)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="model-config-model">Model Name / Identifier</label>
+                                    <input type="text" id="model-config-model" class="search-input" style="max-width:100%;" required placeholder="e.g. llama3:8b or gpt-4o">
+                                </div>
+                                <div class="form-group">
+                                    <label for="model-config-url">API Base URL (Optional)</label>
+                                    <input type="text" id="model-config-url" class="search-input" style="max-width:100%;" placeholder="e.g. http://localhost:11434">
+                                </div>
+                                <div class="form-group">
+                                    <label for="model-config-key">API Key (Optional / Environment Secret)</label>
+                                    <input type="password" id="model-config-key" class="search-input" style="max-width:100%;" placeholder="e.g. sk-proj-...">
+                                </div>
+                                <div style="display: flex; gap: 12px; margin-top: 16px;">
+                                    <button type="submit" class="action-btn" style="padding: 10px 20px; font-size: 0.95em;">Save Endpoint</button>
+                                    <button type="button" class="mini-btn" onclick="resetModelForm()" style="padding: 10px; font-size: 0.95em;">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-panel 3: CONFIGURE TEST CASES -->
+                <div id="sub-panel-cases" class="tab-sub-panel">
+                    <div class="dashboard-row" style="grid-template-columns: 1.2fr 0.8fr; gap: 24px;">
+                        <!-- Test cases list -->
+                        <div class="card-wrapper">
+                            <div class="card-title">Test Cases Registry</div>
+                            <div id="cases-list" class="case-list-manager" style="max-height: 500px;">
+                                <!-- Cases fetched dynamically -->
+                                <div style="color: var(--text-muted); font-size: 0.9em; text-align: center; padding: 20px;">Loading test cases...</div>
+                            </div>
+                        </div>
+
+                        <!-- Add test case form -->
+                        <div class="card-wrapper">
+                            <div class="card-title">Add Test Case</div>
+                            <form id="case-config-form" onsubmit="saveTestCase(event)">
+                                <div class="form-group">
+                                    <label for="case-config-name">Test Case Name</label>
+                                    <input type="text" id="case-config-name" class="search-input" style="max-width:100%;" required placeholder="e.g. Factorial Syntax Check">
+                                </div>
+                                <div class="form-group">
+                                    <label for="case-config-prompt">Test Prompt</label>
+                                    <textarea id="case-config-prompt" required placeholder="e.g. Write a python function that computes factorial..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="case-config-expected">Expected Output / Grounding Target (Optional)</label>
+                                    <textarea id="case-config-expected" placeholder="Optionally paste reference code or factual assertions..."></textarea>
+                                </div>
+                                <button type="submit" class="action-btn" style="margin-top: 10px; padding: 10px 20px; font-size: 0.95em;">Save Test Case</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- TAB 3: LOGS & HISTORY -->
             <section id="panel-history" class="tab-panel">
                 <div class="page-header">
@@ -1240,6 +1780,7 @@
         let allHistory = [];
 
         // Tab selection
+        // Tab selection
         function switchTab(tabId, el) {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
@@ -1251,6 +1792,567 @@
                 loadStats();
             } else if (tabId === 'history') {
                 loadHistory();
+            } else if (tabId === 'evaluation') {
+                loadEvaluationData();
+            }
+        }
+
+        // Drag and drop setup for batch upload
+        function setupDragAndDrop() {
+            const dropZone = document.getElementById('drop-zone');
+            if (!dropZone) return;
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('dragover');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('dragover');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    uploadBatchFile(files[0]);
+                }
+            }, false);
+        }
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                uploadBatchFile(files[0]);
+            }
+        }
+
+        async function uploadBatchFile(file) {
+            const modelDesc = document.getElementById('batch-model-desc').value.trim() || file.name;
+            const statusEl = document.getElementById('upload-status');
+            statusEl.textContent = `Uploading and parsing ${file.name}...`;
+            statusEl.style.color = 'var(--primary)';
+
+            const checks = [];
+            if (document.getElementById('batch-check-code').checked) checks.push('code_check');
+            if (document.getElementById('batch-check-safety').checked) checks.push('safety_check');
+            if (document.getElementById('batch-check-grounding').checked) checks.push('grounding_check');
+            if (document.getElementById('batch-check-structure').checked) checks.push('structure_check');
+            if (document.getElementById('batch-check-similarity').checked) checks.push('semantic_check');
+            if (document.getElementById('batch-check-fluency').checked) checks.push('fluency_check');
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('model_description', modelDesc);
+            formData.append('checks', JSON.stringify(checks));
+
+            document.getElementById('batch-scan').style.display = 'block';
+            document.getElementById('batch-results').style.display = 'none';
+
+            try {
+                const res = await fetch('/api/verify/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                document.getElementById('batch-scan').style.display = 'none';
+                
+                if (data.error) {
+                    statusEl.textContent = `Error: ${data.error}`;
+                    statusEl.style.color = 'var(--danger)';
+                    return;
+                }
+
+                statusEl.textContent = `Successfully processed ${data.total_runs} test cases.`;
+                statusEl.style.color = 'var(--success)';
+                displayBatchResults(data);
+            } catch (err) {
+                document.getElementById('batch-scan').style.display = 'none';
+                statusEl.textContent = `Connection failed: ${err.message}`;
+                statusEl.style.color = 'var(--danger)';
+            }
+        }
+
+        async function runBatchJSON() {
+            const area = document.getElementById('batch-json-area');
+            const statusEl = document.getElementById('upload-status');
+            const modelDesc = document.getElementById('batch-model-desc').value.trim() || 'JSON Batch';
+            
+            let items = [];
+            try {
+                items = JSON.parse(area.value.trim());
+                if (!Array.isArray(items)) {
+                    throw new Error("Payload must be a JSON array.");
+                }
+            } catch (err) {
+                alert("Invalid JSON format: " + err.message);
+                return;
+            }
+
+            const checks = [];
+            if (document.getElementById('batch-check-code').checked) checks.push('code_check');
+            if (document.getElementById('batch-check-safety').checked) checks.push('safety_check');
+            if (document.getElementById('batch-check-grounding').checked) checks.push('grounding_check');
+            if (document.getElementById('batch-check-structure').checked) checks.push('structure_check');
+            if (document.getElementById('batch-check-similarity').checked) checks.push('semantic_check');
+            if (document.getElementById('batch-check-fluency').checked) checks.push('fluency_check');
+
+            document.getElementById('batch-scan').style.display = 'block';
+            document.getElementById('batch-results').style.display = 'none';
+            statusEl.textContent = "Processing JSON batch...";
+            statusEl.style.color = 'var(--primary)';
+
+            try {
+                const res = await fetch('/api/verify/batch', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        model_description: modelDesc,
+                        items: items,
+                        checks: checks
+                    })
+                });
+                const data = await res.json();
+                document.getElementById('batch-scan').style.display = 'none';
+                
+                if (data.error) {
+                    statusEl.textContent = `Error: ${data.error}`;
+                    statusEl.style.color = 'var(--danger)';
+                    return;
+                }
+
+                statusEl.textContent = `Successfully processed ${data.total_runs} test cases from JSON.`;
+                statusEl.style.color = 'var(--success)';
+                displayBatchResults(data);
+            } catch (err) {
+                document.getElementById('batch-scan').style.display = 'none';
+                statusEl.textContent = `Connection failed: ${err.message}`;
+                statusEl.style.color = 'var(--danger)';
+            }
+        }
+
+        function displayBatchResults(data) {
+            document.getElementById('batch-results').style.display = 'block';
+            document.getElementById('batch-stat-total').textContent = data.total_runs;
+            document.getElementById('batch-stat-passed').textContent = data.passed_runs;
+            document.getElementById('batch-stat-failed').textContent = data.failed_runs;
+
+            const tbody = document.getElementById('batch-results-tbody');
+            tbody.innerHTML = '';
+
+            data.results.forEach(run => {
+                const row = document.createElement('tr');
+                row.onclick = () => openDrawer(run);
+                row.style.cursor = 'pointer';
+
+                const totalChecks = run.passed_count + run.failed_count;
+                const statusBadge = `<span class="badge ${run.status === 'passed' ? 'passed' : 'failed'}">${run.status}</span>`;
+
+                row.innerHTML = `
+                    <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${run.prompt}</td>
+                    <td>${run.passed_count}/${totalChecks} passed</td>
+                    <td>${statusBadge}</td>
+                    <td style="color: var(--primary); font-weight: 500;">Inspect &rarr;</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function switchSubTab(subTabId) {
+            document.querySelectorAll('.sub-nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.tab-sub-panel').forEach(panel => panel.classList.remove('active'));
+            
+            document.getElementById(`sub-nav-${subTabId}`).classList.add('active');
+            document.getElementById(`sub-panel-${subTabId}`).classList.add('active');
+            
+            if (subTabId === 'models') {
+                loadModels();
+            } else if (subTabId === 'cases') {
+                loadTestCases();
+            } else if (subTabId === 'run') {
+                loadEvaluationData();
+            }
+        }
+
+        let testCasesCache = [];
+        let modelsCache = [];
+
+        async function loadEvaluationData() {
+            await Promise.all([loadModels(), loadTestCases()]);
+            
+            const caseList = document.getElementById('case-cb-list');
+            caseList.innerHTML = '';
+            testCasesCache.forEach(tc => {
+                const item = document.createElement('div');
+                item.className = 'case-item-row';
+                item.style.padding = '8px 12px';
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" name="eval-cases" value="${tc.id}" id="cb-case-${tc.id}" checked style="cursor:pointer; width:16px; height:16px;">
+                        <label for="cb-case-${tc.id}" style="font-size:0.9em; font-weight:500; cursor:pointer;">${tc.name}</label>
+                    </div>
+                `;
+                caseList.appendChild(item);
+            });
+
+            const modelList = document.getElementById('model-cb-list');
+            modelList.innerHTML = '';
+            modelsCache.forEach(m => {
+                const item = document.createElement('div');
+                item.className = 'model-item-row';
+                item.style.padding = '8px 12px';
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" name="eval-models" value="${m.id}" id="cb-model-${m.id}" checked style="cursor:pointer; width:16px; height:16px;">
+                        <label for="cb-model-${m.id}" style="font-size:0.9em; font-weight:500; cursor:pointer;">${m.name} (${m.model_name})</label>
+                    </div>
+                `;
+                modelList.appendChild(item);
+            });
+        }
+
+        async function loadModels() {
+            try {
+                const res = await fetch('/api/models');
+                modelsCache = await res.json();
+                
+                const list = document.getElementById('models-list');
+                list.innerHTML = '';
+                
+                if (modelsCache.length === 0) {
+                    list.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9em; text-align: center; padding: 20px;">No model endpoints configured. Add one on the right.</div>';
+                    return;
+                }
+
+                modelsCache.forEach(m => {
+                    const row = document.createElement('div');
+                    row.className = 'model-item-row';
+                    
+                    row.innerHTML = `
+                        <div style="display:flex; flex-direction:column; gap:2px; max-width:65%;">
+                            <strong style="color:var(--text-main); font-size:0.95em;">${m.name}</strong>
+                            <span style="font-size:0.8em; color:var(--text-muted);">${m.provider.toUpperCase()} &bull; Model: ${m.model_name}</span>
+                            ${m.base_url ? `<span style="font-size:0.75em; color:var(--text-muted); font-family:var(--font-mono); text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${m.base_url}</span>` : ''}
+                        </div>
+                        <div class="row-actions">
+                            <button class="mini-btn success" onclick="testModelConfig(${JSON.stringify(m).replace(/"/g, '&quot;')}, this)">Test</button>
+                            <button class="mini-btn" onclick="editModelConfig(${JSON.stringify(m).replace(/"/g, '&quot;')})">Edit</button>
+                            <button class="mini-btn danger" onclick="deleteModelConfig('${m.id}')">Delete</button>
+                        </div>
+                    `;
+                    list.appendChild(row);
+                });
+            } catch (err) {
+                console.error("Error loading models:", err);
+            }
+        }
+
+        async function loadTestCases() {
+            try {
+                const res = await fetch('/api/test_cases');
+                testCasesCache = await res.json();
+                
+                const list = document.getElementById('cases-list');
+                list.innerHTML = '';
+                
+                if (testCasesCache.length === 0) {
+                    list.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9em; text-align: center; padding: 20px;">No test cases in registry. Add one on the right.</div>';
+                    return;
+                }
+
+                testCasesCache.forEach(tc => {
+                    const row = document.createElement('div');
+                    row.className = 'case-item-row';
+                    
+                    row.innerHTML = `
+                        <div style="display:flex; flex-direction:column; gap:2px; max-width:80%;">
+                            <strong style="color:var(--text-main); font-size:0.95em;">${tc.name}</strong>
+                            <span style="font-size:0.8em; color:var(--text-muted); text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">Prompt: ${tc.prompt}</span>
+                        </div>
+                        <div class="row-actions">
+                            <button class="mini-btn danger" onclick="deleteTestCase('${tc.id}')">Delete</button>
+                        </div>
+                    `;
+                    list.appendChild(row);
+                });
+            } catch (err) {
+                console.error("Error loading test cases:", err);
+            }
+        }
+
+        function handleProviderChange() {
+            const provider = document.getElementById('model-config-provider').value;
+            const urlInput = document.getElementById('model-config-url');
+            const keyInput = document.getElementById('model-config-key');
+            
+            if (provider === 'ollama') {
+                urlInput.placeholder = 'e.g. http://localhost:11434';
+                urlInput.required = false;
+                keyInput.placeholder = 'Not required for Ollama';
+                keyInput.required = false;
+            } else if (provider === 'openai') {
+                urlInput.placeholder = 'e.g. https://api.openai.com/v1 (Optional)';
+                urlInput.required = false;
+                keyInput.placeholder = 'sk-proj-... (Uses environment variable if empty)';
+                keyInput.required = false;
+            } else if (provider === 'anthropic') {
+                urlInput.placeholder = 'e.g. https://api.anthropic.com/v1 (Optional)';
+                urlInput.required = false;
+                keyInput.placeholder = 'x-api-key (Uses environment variable if empty)';
+                keyInput.required = false;
+            } else if (provider === 'gemini') {
+                urlInput.placeholder = 'Not required';
+                urlInput.required = false;
+                keyInput.placeholder = 'Google API Key (Uses environment variable if empty)';
+                keyInput.required = false;
+            } else {
+                urlInput.placeholder = 'e.g. http://localhost:8000/v1 (Required)';
+                urlInput.required = true;
+                keyInput.placeholder = 'API Key (Optional)';
+                keyInput.required = false;
+            }
+        }
+
+        async function saveModelConfig(e) {
+            e.preventDefault();
+            const id = document.getElementById('model-config-id').value;
+            const name = document.getElementById('model-config-name').value.trim();
+            const provider = document.getElementById('model-config-provider').value;
+            const model_name = document.getElementById('model-config-model').value.trim();
+            const base_url = document.getElementById('model-config-url').value.trim();
+            const api_key = document.getElementById('model-config-key').value.trim();
+
+            const payload = { name, provider, model_name, base_url, api_key };
+            if (id) payload.id = id;
+
+            try {
+                const res = await fetch('/api/models', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    resetModelForm();
+                    loadModels();
+                } else {
+                    alert("Error saving model configuration: " + data.error);
+                }
+            } catch (err) {
+                alert("Network error: " + err.message);
+            }
+        }
+
+        function editModelConfig(model) {
+            document.getElementById('model-form-title').textContent = "Edit Model Endpoint";
+            document.getElementById('model-config-id').value = model.id;
+            document.getElementById('model-config-name').value = model.name;
+            document.getElementById('model-config-provider').value = model.provider;
+            document.getElementById('model-config-model').value = model.model_name;
+            document.getElementById('model-config-url').value = model.base_url || '';
+            document.getElementById('model-config-key').value = model.api_key || '';
+            handleProviderChange();
+        }
+
+        function resetModelForm() {
+            document.getElementById('model-form-title').textContent = "Add Model Endpoint";
+            document.getElementById('model-config-id').value = '';
+            document.getElementById('model-config-name').value = '';
+            document.getElementById('model-config-model').value = '';
+            document.getElementById('model-config-url').value = '';
+            document.getElementById('model-config-key').value = '';
+            document.getElementById('model-config-provider').value = 'ollama';
+            handleProviderChange();
+        }
+
+        async function deleteModelConfig(id) {
+            if (confirm("Delete this model config endpoint?")) {
+                try {
+                    await fetch(`/api/models/${id}`, {method: 'DELETE'});
+                    loadModels();
+                } catch (err) {
+                    alert("Error: " + err.message);
+                }
+            }
+        }
+
+        async function testModelConfig(model, btn) {
+            const originalText = btn.textContent;
+            btn.textContent = "Testing...";
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/models/test', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(model)
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    alert(`Connection Success!\nModel response: "${data.response}"`);
+                } else {
+                    alert(`Connection Failed:\n${data.message}`);
+                }
+            } catch (err) {
+                alert("Network error: " + err.message);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function saveTestCase(e) {
+            e.preventDefault();
+            const name = document.getElementById('case-config-name').value.trim();
+            const prompt = document.getElementById('case-config-prompt').value.trim();
+            const expected_output = document.getElementById('case-config-expected').value.trim();
+
+            try {
+                const res = await fetch('/api/test_cases', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ name, prompt, expected_output: expected_output || null })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    document.getElementById('case-config-name').value = '';
+                    document.getElementById('case-config-prompt').value = '';
+                    document.getElementById('case-config-expected').value = '';
+                    loadTestCases();
+                } else {
+                    alert("Error saving test case: " + data.error);
+                }
+            } catch (err) {
+                alert("Network error: " + err.message);
+            }
+        }
+
+        async function deleteTestCase(id) {
+            if (confirm("Delete this test case from the registry?")) {
+                try {
+                    await fetch(`/api/test_cases/${id}`, {method: 'DELETE'});
+                    loadTestCases();
+                } catch (err) {
+                    alert("Error: " + err.message);
+                }
+            }
+        }
+
+        function toggleSelectAll(listId, val) {
+            const inputs = document.querySelectorAll(`#${listId} input[type="checkbox"]`);
+            if (inputs.length === 0) return;
+            const shouldCheck = !inputs[0].checked;
+            inputs.forEach(input => input.checked = shouldCheck);
+        }
+
+        async function runEvaluationSuite() {
+            const caseCheckboxes = document.querySelectorAll('input[name="eval-cases"]:checked');
+            const modelCheckboxes = document.querySelectorAll('input[name="eval-models"]:checked');
+
+            const test_case_ids = Array.from(caseCheckboxes).map(cb => cb.value);
+            const model_ids = Array.from(modelCheckboxes).map(cb => cb.value);
+
+            if (test_case_ids.length === 0 || model_ids.length === 0) {
+                alert("Please select at least one model and one test case to execute.");
+                return;
+            }
+
+            const checks = [];
+            if (document.getElementById('eval-check-code').checked) checks.push('code_check');
+            if (document.getElementById('eval-check-safety').checked) checks.push('safety_check');
+            if (document.getElementById('eval-check-grounding').checked) checks.push('grounding_check');
+            if (document.getElementById('eval-check-structure').checked) checks.push('structure_check');
+            if (document.getElementById('eval-check-similarity').checked) checks.push('semantic_check');
+            if (document.getElementById('eval-check-fluency').checked) checks.push('fluency_check');
+
+            document.getElementById('eval-scan').style.display = 'block';
+            document.getElementById('eval-results').style.display = 'none';
+
+            try {
+                const res = await fetch('/api/evaluations/run', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ test_case_ids, model_ids, checks })
+                });
+                const data = await res.json();
+                document.getElementById('eval-scan').style.display = 'none';
+                
+                if (data.error) {
+                    alert("Evaluation failed: " + data.error);
+                    return;
+                }
+
+                renderEvaluationMatrix(data.results, test_case_ids, model_ids);
+            } catch (err) {
+                document.getElementById('eval-scan').style.display = 'none';
+                alert("Connection failed: " + err.message);
+            }
+        }
+
+        async function renderEvaluationMatrix(results, test_case_ids, model_ids) {
+            document.getElementById('eval-results').style.display = 'block';
+
+            const selectedModels = modelsCache.filter(m => model_ids.includes(m.id));
+            const selectedCases = testCasesCache.filter(tc => test_case_ids.includes(tc.id));
+
+            const thead = document.getElementById('eval-matrix-thead');
+            const tbody = document.getElementById('eval-matrix-tbody');
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>Evaluation Test Case</th>';
+            selectedModels.forEach(m => {
+                headerRow.innerHTML += `<th title="${m.provider.toUpperCase()}">${m.name}</th>`;
+            });
+            thead.appendChild(headerRow);
+
+            selectedCases.forEach(tc => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td class="case-name">${tc.name}</td>`;
+                
+                selectedModels.forEach(m => {
+                    const res = results.find(r => r.model_id === m.id && r.test_case_id === tc.id);
+                    
+                    if (!res) {
+                        row.innerHTML += '<td><span class="badge" style="background:rgba(0,0,0,0.1); color:var(--text-muted)">Skipped</span></td>';
+                    } else if (res.error) {
+                        row.innerHTML += `<td><span class="eval-cell-badge badge failed" onclick="alert('Inference Error:\\n${res.error.replace(/'/g, "\\'")}')">Error</span></td>`;
+                    } else {
+                        const statusClass = res.status === 'passed' ? 'passed' : 'failed';
+                        const badgeColor = res.status === 'passed' ? 'var(--success-glow)' : 'var(--danger-glow)';
+                        const textColor = res.status === 'passed' ? 'var(--success)' : 'var(--danger)';
+                        
+                        row.innerHTML += `
+                            <td>
+                                <span class="eval-cell-badge badge ${statusClass}" 
+                                      onclick="inspectRunId('${res.run_id}')"
+                                      style="background:${badgeColor}; color:${textColor}; border:1px solid ${textColor}">
+                                    ${res.status}
+                                </span>
+                            </td>`;
+                    }
+                });
+                tbody.appendChild(row);
+            });
+        }
+
+        async function inspectRunId(runId) {
+            try {
+                const res = await fetch('/api/history');
+                const data = await res.json();
+                const run = data.find(r => r.id === runId);
+                if (run) {
+                    openDrawer(run);
+                } else {
+                    alert("Run details not found in database. The history may have been cleared.");
+                }
+            } catch (err) {
+                alert("Error retrieving run details: " + err.message);
             }
         }
 
@@ -1618,6 +2720,7 @@
         // Initial setup
         window.onload = () => {
             loadStats();
+            setupDragAndDrop();
         };
     </script>
 </body>
