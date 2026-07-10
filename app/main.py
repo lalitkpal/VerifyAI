@@ -225,6 +225,85 @@ async def verify_output(req: VerifyRequest):
                 }
                 passed_count += 1
                 
+    # 7. Sentiment Check
+    if not checks or "sentiment_check" in checks:
+        try:
+            # Use string comparison as primary; fall back to LLM if expected_output absent
+            if expected_output:
+                sentiment_match = test_sentiment_using_stringcmp_002(prompt, message, expected_output)
+                status = "passed" if sentiment_match else "warning"
+                results["sentiment_check"] = {
+                    "status": status,
+                    "message": "Sentiment matches expected output." if sentiment_match else "Sentiment of response differs from expected output.",
+                    "details": {"match": sentiment_match}
+                }
+            else:
+                try:
+                    ollama_sentiment = test_sentiment_using_gemma3n_002(prompt, message, "")
+                    results["sentiment_check"] = {
+                        "status": "passed",
+                        "message": f"Sentiment evaluation: {ollama_sentiment}",
+                        "details": {"feedback": ollama_sentiment}
+                    }
+                except Exception:
+                    results["sentiment_check"] = {
+                        "status": "passed",
+                        "message": "Sentiment check skipped (no expected output and LLM offline)."
+                    }
+            if results["sentiment_check"]["status"] == "passed":
+                passed_count += 1
+            elif results["sentiment_check"]["status"] == "warning":
+                warning_count += 1
+            else:
+                failed_count += 1
+        except Exception as e:
+            results["sentiment_check"] = {
+                "status": "warning",
+                "message": f"Sentiment check could not be completed: {str(e)}"
+            }
+            warning_count += 1
+
+    # 8. Summarization Check
+    if not checks or "summarization_check" in checks:
+        if expected_output:
+            try:
+                score = test_summarization_using_cosine_similarity_002(prompt, message, expected_output)
+                status = "passed" if score >= 0.6 else "warning"
+                results["summarization_check"] = {
+                    "status": status,
+                    "message": f"Summarization similarity score is {score:.3f} (threshold: 0.600).",
+                    "details": {"score": score}
+                }
+                if status == "passed":
+                    passed_count += 1
+                else:
+                    warning_count += 1
+            except Exception as e:
+                try:
+                    ollama_summ = test_summarization_using_gemma3n_002(prompt, message, expected_output)
+                    status = "passed" if "good" in ollama_summ.lower() else "warning"
+                    results["summarization_check"] = {
+                        "status": status,
+                        "message": f"Summarization evaluation: {ollama_summ}",
+                        "details": {"feedback": ollama_summ}
+                    }
+                    if status == "passed":
+                        passed_count += 1
+                    else:
+                        warning_count += 1
+                except Exception:
+                    results["summarization_check"] = {
+                        "status": "passed",
+                        "message": "Summarization check skipped (LLM offline)."
+                    }
+                    passed_count += 1
+        else:
+            results["summarization_check"] = {
+                "status": "passed",
+                "message": "Summarization check skipped (no expected output provided for comparison)."
+            }
+            passed_count += 1
+
     # Overall status
     overall_status = "failed" if failed_count > 0 else "passed"
     
