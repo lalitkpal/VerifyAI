@@ -1257,6 +1257,26 @@
                                     <span class="slider"></span>
                                 </label>
                             </div>
+                            <div class="check-item" onclick="toggleSwitch('check-sentiment')">
+                                <div class="check-info">
+                                    <span class="check-name">Sentiment Match</span>
+                                    <span class="check-desc">Tone & emotional alignment check</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="check-sentiment">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('check-summarization')">
+                                <div class="check-info">
+                                    <span class="check-name">Summarization Quality</span>
+                                    <span class="check-desc">Content coverage vs reference</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="check-summarization">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -1360,6 +1380,26 @@
                                 </div>
                                 <label class="switch" onclick="event.stopPropagation()">
                                     <input type="checkbox" id="batch-check-fluency" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('batch-check-sentiment')">
+                                <div class="check-info">
+                                    <span class="check-name">Sentiment Match</span>
+                                    <span class="check-desc">Tone & emotional alignment check</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="batch-check-sentiment">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('batch-check-summarization')">
+                                <div class="check-info">
+                                    <span class="check-name">Summarization Quality</span>
+                                    <span class="check-desc">Content coverage vs reference</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="batch-check-summarization">
                                     <span class="slider"></span>
                                 </label>
                             </div>
@@ -1535,6 +1575,26 @@
                                 </div>
                                 <label class="switch" onclick="event.stopPropagation()">
                                     <input type="checkbox" id="eval-check-fluency" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('eval-check-sentiment')">
+                                <div class="check-info">
+                                    <span class="check-name">Sentiment Match</span>
+                                    <span class="check-desc">Tone & emotional alignment check</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="eval-check-sentiment">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="check-item" onclick="toggleSwitch('eval-check-summarization')">
+                                <div class="check-info">
+                                    <span class="check-name">Summarization Quality</span>
+                                    <span class="check-desc">Content coverage vs reference</span>
+                                </div>
+                                <label class="switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="eval-check-summarization">
                                     <span class="slider"></span>
                                 </label>
                             </div>
@@ -1845,6 +1905,8 @@
             if (document.getElementById('batch-check-structure').checked) checks.push('structure_check');
             if (document.getElementById('batch-check-similarity').checked) checks.push('semantic_check');
             if (document.getElementById('batch-check-fluency').checked) checks.push('fluency_check');
+            if (document.getElementById('batch-check-sentiment').checked) checks.push('sentiment_check');
+            if (document.getElementById('batch-check-summarization').checked) checks.push('summarization_check');
 
             const formData = new FormData();
             formData.append('file', file);
@@ -1901,6 +1963,8 @@
             if (document.getElementById('batch-check-structure').checked) checks.push('structure_check');
             if (document.getElementById('batch-check-similarity').checked) checks.push('semantic_check');
             if (document.getElementById('batch-check-fluency').checked) checks.push('fluency_check');
+            if (document.getElementById('batch-check-sentiment').checked) checks.push('sentiment_check');
+            if (document.getElementById('batch-check-summarization').checked) checks.push('summarization_check');
 
             document.getElementById('batch-scan').style.display = 'block';
             document.getElementById('batch-results').style.display = 'none';
@@ -2268,6 +2332,8 @@
             if (document.getElementById('eval-check-structure').checked) checks.push('structure_check');
             if (document.getElementById('eval-check-similarity').checked) checks.push('semantic_check');
             if (document.getElementById('eval-check-fluency').checked) checks.push('fluency_check');
+            if (document.getElementById('eval-check-sentiment').checked) checks.push('sentiment_check');
+            if (document.getElementById('eval-check-summarization').checked) checks.push('summarization_check');
 
             document.getElementById('eval-scan').style.display = 'block';
             document.getElementById('eval-results').style.display = 'none';
@@ -2493,6 +2559,8 @@
             if (document.getElementById('check-structure').checked) checks.push('structure_check');
             if (document.getElementById('check-similarity').checked) checks.push('semantic_check');
             if (document.getElementById('check-fluency').checked) checks.push('fluency_check');
+            if (document.getElementById('check-sentiment').checked) checks.push('sentiment_check');
+            if (document.getElementById('check-summarization').checked) checks.push('summarization_check');
 
             // Show scan overlay
             document.getElementById('verify-scan').style.display = 'block';
