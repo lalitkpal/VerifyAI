@@ -14,3 +14,4 @@ openpyxl==3.1.2
 python-multipart==0.0.9
 
 language-tool-python==2.8.1
+cryptography==42.0.8

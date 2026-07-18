@@ -1,9 +1,57 @@
 import os
 import json
 import uuid
+import base64
 from datetime import datetime
 from databases import Database
 import sqlalchemy
+from cryptography.fernet import Fernet
+
+# ---------------------------------------------------------------------------
+# API Key Encryption
+# ---------------------------------------------------------------------------
+# The encryption key is read from the VERIFYAI_SECRET_KEY environment variable.
+# If not set, a fresh key is generated and printed once so the operator can
+# persist it. Keys stored in the DB are Fernet-encrypted; plaintext keys
+# never leave this module.
+
+def _get_fernet() -> Fernet:
+    raw = os.environ.get("VERIFYAI_SECRET_KEY", "")
+    if raw:
+        # Accept both raw 32-byte keys (base64-encoded) and pre-generated Fernet keys
+        key = raw.encode() if isinstance(raw, str) else raw
+    else:
+        key = Fernet.generate_key()
+        print(
+            f"\n[VerifyAI] WARNING: VERIFYAI_SECRET_KEY not set. "
+            f"Generated a temporary key for this session:\n"
+            f"  {key.decode()}\n"
+            f"Set this as an environment variable to persist encrypted keys across restarts.\n"
+        )
+    return Fernet(key)
+
+_fernet = _get_fernet()
+
+
+def encrypt_api_key(plaintext: str) -> str:
+    """Encrypt a plaintext API key for storage. Returns empty string for empty input."""
+    if not plaintext:
+        return ""
+    return _fernet.encrypt(plaintext.encode()).decode()
+
+
+def decrypt_api_key(ciphertext: str) -> str:
+    """Decrypt a stored API key. Returns empty string for empty input.
+    Falls back to returning the value as-is if it was stored unencrypted (migration path).
+    """
+    if not ciphertext:
+        return ""
+    try:
+        return _fernet.decrypt(ciphertext.encode()).decode()
+    except Exception:
+        # Value may be a legacy plaintext key stored before encryption was added
+        return ciphertext
+
 
 DATABASE_URL = "sqlite:///verifyai.db"
 
@@ -184,6 +232,7 @@ async def get_model_endpoints():
     for row in rows:
         d = dict(row)
         d["is_active"] = bool(d["is_active"])
+        d["api_key"] = decrypt_api_key(d.get("api_key", ""))
         result.append(d)
     return result
 
@@ -204,7 +253,7 @@ async def save_model_endpoint(
             name=name,
             provider=provider,
             model_name=model_name,
-            api_key=api_key,
+            api_key=encrypt_api_key(api_key),
             base_url=base_url,
             is_active=is_active
         )
@@ -213,7 +262,7 @@ async def save_model_endpoint(
             name=name,
             provider=provider,
             model_name=model_name,
-            api_key=api_key,
+            api_key=encrypt_api_key(api_key),
             base_url=base_url,
             is_active=is_active
         )
