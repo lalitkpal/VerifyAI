@@ -1724,7 +1724,15 @@
 
                 <div class="history-controls">
                     <input type="text" id="history-search" class="search-input" placeholder="Search by prompt or source..." oninput="filterHistory()">
-                    <button class="clear-history-btn" onclick="clearHistory()">Clear History</button>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="mini-btn" onclick="window.location.href='/api/history/export/csv'" style="padding: 10px 14px; font-size: 0.88em;">
+                            ↓ Export CSV
+                        </button>
+                        <button class="mini-btn" onclick="window.location.href='/api/history/export/json'" style="padding: 10px 14px; font-size: 0.88em;">
+                            ↓ Export JSON
+                        </button>
+                        <button class="clear-history-btn" onclick="clearHistory()">Clear History</button>
+                    </div>
                 </div>
 
                 <div class="history-table-container">

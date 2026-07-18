@@ -5,6 +5,9 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 import json
+import csv
+import io
+from fastapi.responses import StreamingResponse
 
 # Existing imports
 from app.models.ollama_chat import get_gemma3n_response
@@ -132,6 +135,7 @@ async def verify_output(req: VerifyRequest):
         if is_coding or has_code:
             code_res = run_code_verifications(message)
             results["code_check"] = code_res
+            results["code_check"]["score"] = 1.0 if code_res["status"] == "passed" else 0.0
             if code_res["status"] == "passed":
                 passed_count += 1
             else:
@@ -141,6 +145,7 @@ async def verify_output(req: VerifyRequest):
     if not checks or "safety_check" in checks:
         safety_res = run_safety_verifications(prompt, message)
         results["safety_check"] = safety_res
+        results["safety_check"]["score"] = 1.0 if safety_res["status"] == "passed" else 0.0
         if safety_res["status"] == "passed":
             passed_count += 1
         else:
@@ -153,6 +158,7 @@ async def verify_output(req: VerifyRequest):
         if is_search or has_urls:
             ground_res = await verify_citations_and_links(message, source)
             results["grounding_check"] = ground_res
+            results["grounding_check"]["score"] = 1.0 if ground_res["status"] == "passed" else (0.5 if ground_res["status"] == "warning" else 0.0)
             if ground_res["status"] == "passed":
                 passed_count += 1
             elif ground_res["status"] == "warning":
@@ -164,6 +170,7 @@ async def verify_output(req: VerifyRequest):
     if not checks or "structure_check" in checks:
         struct_res = verify_structure_compliance(prompt, message)
         results["structure_check"] = struct_res
+        results["structure_check"]["score"] = 1.0 if struct_res["status"] == "passed" else 0.0
         if struct_res["status"] == "passed":
             passed_count += 1
         else:
@@ -178,7 +185,8 @@ async def verify_output(req: VerifyRequest):
                 results["semantic_check"] = {
                     "status": status,
                     "message": f"Semantic similarity score is {score:.3f} (threshold: 0.700).",
-                    "details": {"score": score}
+                    "details": {"score": score},
+                    "score": round(score, 4)
                 }
                 if status == "passed":
                     passed_count += 1
@@ -187,7 +195,8 @@ async def verify_output(req: VerifyRequest):
             except Exception as e:
                 results["semantic_check"] = {
                     "status": "warning",
-                    "message": f"Could not compute similarity: {str(e)}"
+                    "message": f"Could not compute similarity: {str(e)}",
+                    "score": 0.5
                 }
                 warning_count += 1
                 
@@ -199,7 +208,8 @@ async def verify_output(req: VerifyRequest):
             results["fluency_check"] = {
                 "status": status,
                 "message": f"Found {num_errors} grammar rules issues.",
-                "details": {"grammar_errors": num_errors}
+                "details": {"grammar_errors": num_errors},
+                "score": round(max(0.0, 1.0 - num_errors / 10), 4)
             }
             if status == "passed":
                 passed_count += 1
@@ -212,7 +222,8 @@ async def verify_output(req: VerifyRequest):
                 results["fluency_check"] = {
                     "status": status,
                     "message": f"Ollama Fluency evaluation: {ollama_fluency}",
-                    "details": {"feedback": ollama_fluency}
+                    "details": {"feedback": ollama_fluency},
+                    "score": 1.0 if status == "passed" else 0.5
                 }
                 if status == "passed":
                     passed_count += 1
@@ -221,7 +232,8 @@ async def verify_output(req: VerifyRequest):
             except Exception:
                 results["fluency_check"] = {
                     "status": "passed",
-                    "message": "Basic grammar evaluation skipped (grammar tools offline)."
+                    "message": "Basic grammar evaluation skipped (grammar tools offline).",
+                    "score": 1.0
                 }
                 passed_count += 1
                 
@@ -235,7 +247,8 @@ async def verify_output(req: VerifyRequest):
                 results["sentiment_check"] = {
                     "status": status,
                     "message": "Sentiment matches expected output." if sentiment_match else "Sentiment of response differs from expected output.",
-                    "details": {"match": sentiment_match}
+                    "details": {"match": sentiment_match},
+                    "score": 1.0 if status == "passed" else 0.5
                 }
             else:
                 try:
@@ -243,12 +256,14 @@ async def verify_output(req: VerifyRequest):
                     results["sentiment_check"] = {
                         "status": "passed",
                         "message": f"Sentiment evaluation: {ollama_sentiment}",
-                        "details": {"feedback": ollama_sentiment}
+                        "details": {"feedback": ollama_sentiment},
+                        "score": 1.0
                     }
                 except Exception:
                     results["sentiment_check"] = {
                         "status": "passed",
-                        "message": "Sentiment check skipped (no expected output and LLM offline)."
+                        "message": "Sentiment check skipped (no expected output and LLM offline).",
+                        "score": 1.0
                     }
             if results["sentiment_check"]["status"] == "passed":
                 passed_count += 1
@@ -259,7 +274,8 @@ async def verify_output(req: VerifyRequest):
         except Exception as e:
             results["sentiment_check"] = {
                 "status": "warning",
-                "message": f"Sentiment check could not be completed: {str(e)}"
+                "message": f"Sentiment check could not be completed: {str(e)}",
+                "score": 0.5
             }
             warning_count += 1
 
@@ -272,7 +288,8 @@ async def verify_output(req: VerifyRequest):
                 results["summarization_check"] = {
                     "status": status,
                     "message": f"Summarization similarity score is {score:.3f} (threshold: 0.600).",
-                    "details": {"score": score}
+                    "details": {"score": score},
+                    "score": round(score, 4)
                 }
                 if status == "passed":
                     passed_count += 1
@@ -285,7 +302,8 @@ async def verify_output(req: VerifyRequest):
                     results["summarization_check"] = {
                         "status": status,
                         "message": f"Summarization evaluation: {ollama_summ}",
-                        "details": {"feedback": ollama_summ}
+                        "details": {"feedback": ollama_summ},
+                        "score": 1.0 if status == "passed" else 0.5
                     }
                     if status == "passed":
                         passed_count += 1
@@ -294,18 +312,25 @@ async def verify_output(req: VerifyRequest):
                 except Exception:
                     results["summarization_check"] = {
                         "status": "passed",
-                        "message": "Summarization check skipped (LLM offline)."
+                        "message": "Summarization check skipped (LLM offline).",
+                        "score": 1.0
                     }
                     passed_count += 1
         else:
             results["summarization_check"] = {
                 "status": "passed",
-                "message": "Summarization check skipped (no expected output provided for comparison)."
+                "message": "Summarization check skipped (no expected output provided for comparison).",
+                "score": 1.0
             }
             passed_count += 1
 
-    # Overall status
-    overall_status = "failed" if failed_count > 0 else "passed"
+    # Overall status: failed > warning > passed
+    if failed_count > 0:
+        overall_status = "failed"
+    elif warning_count > 0:
+        overall_status = "warning"
+    else:
+        overall_status = "passed"
     
     # Save to database
     run_id = await database.save_verification_run(
@@ -377,6 +402,64 @@ async def get_stats():
 async def delete_history():
     await database.clear_history()
     return {"status": "success", "message": "Verification history cleared."}
+
+@app.get("/api/history/export/json")
+async def export_history_json():
+    """Download full verification history as a JSON file."""
+    runs = await database.get_verification_runs()
+    content = json.dumps(runs, indent=2, default=str)
+    return StreamingResponse(
+        io.BytesIO(content.encode()),
+        media_type="application/json",
+        headers={"Content-Disposition": "attachment; filename=verifyai_history.json"}
+    )
+
+
+@app.get("/api/history/export/csv")
+async def export_history_csv():
+    """Download verification history as a CSV file (one row per run, checks flattened)."""
+    runs = await database.get_verification_runs()
+    output = io.StringIO()
+    
+    # Collect all check keys across all runs for dynamic columns
+    all_check_keys: set = set()
+    for run in runs:
+        all_check_keys.update(run.get("results", {}).keys())
+    check_keys = sorted(all_check_keys)
+    
+    fieldnames = ["id", "timestamp", "source", "status", "passed_count", "failed_count", "prompt", "message", "expected_output"] + \
+                 [f"{k}_status" for k in check_keys] + \
+                 [f"{k}_score" for k in check_keys]
+    
+    writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction="ignore")
+    writer.writeheader()
+    
+    for run in runs:
+        row: dict = {
+            "id": run.get("id"),
+            "timestamp": run.get("timestamp"),
+            "source": run.get("source"),
+            "status": run.get("status"),
+            "passed_count": run.get("passed_count"),
+            "failed_count": run.get("failed_count"),
+            "prompt": run.get("prompt", "")[:500],       # truncate for readability
+            "message": run.get("message", "")[:500],
+            "expected_output": run.get("expected_output", "")[:300],
+        }
+        results = run.get("results", {})
+        for k in check_keys:
+            check = results.get(k, {})
+            row[f"{k}_status"] = check.get("status", "")
+            row[f"{k}_score"] = check.get("score", "")
+        writer.writerow(row)
+    
+    output.seek(0)
+    return StreamingResponse(
+        io.BytesIO(output.getvalue().encode()),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=verifyai_history.csv"}
+    )
+
 
 @app.post("/api/verify/batch")
 async def verify_batch(req: BatchVerifyRequest):
